@@ -158,7 +158,7 @@ unique.flagged<-flagged[ ! duplicated( flagged[c("FamilyMemberId","FamilyId")]),
 # after employing a quick rule to simplify the analysis                                                      #
 ##############################################################################################################
 
-# second, let's investigate fixes for flagged observations
+# second, l's investigate fixes for flagged observations
 sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==96 & sorted.merged$FamilyMemberId == 45),]    # drop this observation, appears to be a duplicate of 96 & 43
 sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==287 & sorted.merged$FamilyMemberId == 564),]  # drop this observation, appears to create a new entry for pre-existing FII member
 sorted.merged$age2[(sorted.merged$Birthday== "1899-01-31")] <- NA                                    # some birth years are 1899, which must be wrong
@@ -303,6 +303,33 @@ library(zoo)
 sorted.merged$JournalMoYr <- as.yearmon(sorted.merged$JournalDate) # month & year of JournalDate is  now variable
 sorted.merged$JournalMoYr <- as.Date(sorted.merged$JournalMoYr, format="%b %Y")
 
+
+## ADDITIONAL FIXES THAT WERE SPOTTED LATER AND NEED CLEANED FOR HOUSEHOLDS
+## (most of these relate to very long durations in FII that seemed wrong; trying to err on conservative side, though)
+## changes made 01/06/2015
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 325  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 312  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 310  & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 308  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 282  & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 274  & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 270  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264  & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 254  & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 238  & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 236  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 227  & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 214  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 201  & sorted.merged$JournalMoYr == "2013-01-01" )]  <- "2014-01-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 194  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 190  & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 179  & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2014-06-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 156  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 107  & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 102  & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
+
+
 # set up a dummy count variable
 sorted.merged$Count <- 1
 
@@ -385,7 +412,7 @@ g3 <- ggplot(data=tenure.familymemberid) +
 print(g3)
 ggsave(g3, file= "Dist_Respondent_Tenure.pdf")
 
-# some oddities: there are a smattering of individuals whose entry in system is > 25 months
+# some oddities: there are a few individuals whose entry in system is > 25 months
 # not clear how we resolve this problem (if it is a problem)
 
 # number of monthly entries for each individual
@@ -393,7 +420,7 @@ entries.by.individual <- aggregate(sorted.merged$FamilyMemberId,
                                    by=list(FamilyMemberId=sorted.merged$FamilyMemberId),
                                    function(x) length(x))
 
-max(entries.by.individual$x) #[1] 14 - that's the most entries any person has #FIX!
+max(entries.by.individual$x) #[1] 14 - that's the most entries any person has 
 min(entries.by.individual$x) #[1] 1 - that's the fewest entries any person has
 
 # plot distribution of individual reporting frequency
@@ -480,7 +507,6 @@ colnames(attrition) <- c('Periods','Count')
 colnames(attrition.core) <- c('Periods','Count')
 
 # calculate Pr(Not Enrolled in the current or subsequent month | Enrolled in prior month)
-# probability calculation in code:
 attrition.rate <- round(c(NA,1-attrition$Count[-1]/attrition$Count[-length(attrition$Count)]),digits=2)
 attrition.rate.core <- round(c(NA,1-attrition.core$Count[-1]/attrition.core$Count[-length(attrition.core$Count)]),digits=2)
 
@@ -684,10 +710,10 @@ names(hh.vars2) <- paste(c("Date","FamilyID","ChildSupportIncome", "EITC", "Food
                            "RentalIncomeAmount","OtherLumpIncome", "HousingSubsidizedAmount", "HousingRentAmount",
                            "MortgageAmount"), "HH", sep=".")
 
-## SPLIT INCOME INTO (1) CAPITAL & LABOR INCOME AND (2) WELFARE INCOME AT THE FAMILY LEVEL 
-
 # merge to get household numeric income and expense data
 my.hh.data <- merge(hh.vars, hh.vars2, by=c("FamilyID.HH", "Date.HH"))
+
+## SPLIT INCOME INTO (1) CAPITAL & LABOR INCOME AND (2) WELFARE INCOME AT THE FAMILY LEVEL 
 
 # monthly welfare income
 my.hh.data$welfare.inc.HH <- my.hh.data$ChildSupportIncome.HH + my.hh.data$EITC.HH + my.hh.data$FoodStampIncome.HH +
@@ -704,9 +730,22 @@ my.hh.data$hsg.exp.HH <- my.hh.data$MortgageAmount.HH + my.hh.data$HousingRentAm
 # total monthly income at HH level
 my.hh.data$TotalInc.HH <- my.hh.data$KL.inc.HH + my.hh.data$welfare.inc.HH 
 
+# add variable for cumulative months household is reporting in FII
+my.hh.data <- ddply(my.hh.data, .(FamilyID.HH), mutate, 
+                    mindate = min(Date.HH),
+                    reportingmos = elapsed_months(Date.HH, mindate),
+                    maxmos = max(reportingmos))
+
+# add variable for cumulative reporting periods (i.e., number of logged FII meetings)
+# some people can be in FII for years (reportingmos), but only report a few times (Periods)
+my.hh.data$Count <- 1
+my.hh.data <- ddply(my.hh.data, .(FamilyID.HH), mutate, 
+                    Periods  = cumsum(Count),
+                    maxpds = max(Periods))
+
 # distribution of welfare income by household-month 
 dist.welfare <- ggplot(data = my.hh.data) +
-  geom_histogram(aes(x = welfare.inc.HH, y = ..count../sum(..count..)),binwidth = 250, fill = "white", color = "black") +
+  geom_histogram(aes(x = welfare.inc.HH, y = ..count../sum(..count..)), binwidth = 250, fill = "white", color = "black") +
   scale_y_continuous(labels = percent_format()) +
   scale_x_continuous(breaks = seq(0,12000,by=1000),
                       labels = c(0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000),
@@ -754,10 +793,261 @@ ggsave(file= "Dist_Total_Income.pdf", dist.totinc.wfoot)
 # density plot of total income by household-month observation
 plot(density(my.hh.data$TotalInc.HH)) + abline(v=median(my.hh.data$TotalInc.HH))
 
+###################################################################################
+##            COMPARE DISTRIBUTIONS OF INCOME AT BASELINE AND                    ##
+##                  6, 9, AND 12 MONTHS AFTER ENROLLMENT                         ##
+###################################################################################
+
+# VARIOUS SUBSETS FOR MONTHS
+sixmos.hh <- subset(my.hh.data, maxmos >= 7)
+ninemos.hh <- subset(my.hh.data, maxmos >= 10)
+twelvemos.hh <- subset(my.hh.data, maxmos >= 13)
+
+sixmos.hh.one <- subset(sixmos.hh, reportingmos == 1)
+ninemos.hh.one <- subset(ninemos.hh, reportingmos == 1)
+twelvemos.hh.one <- subset(twelvemos.hh, reportingmos == 1)
+
+sixmos.hh.after <- subset(sixmos.hh, reportingmos == 7)
+ninemos.hh.after <- subset(ninemos.hh, reportingmos == 10)
+twelvemos.hh.after <- subset(twelvemos.hh, reportingmos >= 13) # this is different to account for those who are beyond one year figure
+
+# mean and median income figures - 6 months
+TotalInc.six.one.mean <- mean(sixmos.hh.one$TotalInc.HH)
+TotalInc.six.after.mean <- mean(sixmos.hh.after$TotalInc.HH)
+
+TotalInc.six.one.med <- median(sixmos.hh.one$TotalInc.HH)
+TotalInc.six.after.med <- median(sixmos.hh.after$TotalInc.HH)
+
+KL.inc.six.one.mean <- mean(sixmos.hh.one$KL.inc.HH)
+KL.inc.six.after.mean <- mean(sixmos.hh.after$KL.inc.HH)
+
+KL.inc.six.one.med <- median(sixmos.hh.one$KL.inc.HH)
+KL.inc.six.after.med <- median(sixmos.hh.after$KL.inc.HH)
+
+Welfare.inc.six.one.mean <- mean(sixmos.hh.one$welfare.inc.HH)
+Welfare.inc.six.after.mean <- mean(sixmos.hh.after$welfare.inc.HH)
+
+Welfare.inc.six.one.med <- median(sixmos.hh.one$welfare.inc.HH)
+Welfare.inc.six.after.med <- median(sixmos.hh.after$welfare.inc.HH)
+
+# mean and median income figures - 9 months
+TotalInc.nine.one.mean <- mean(ninemos.hh.one$TotalInc.HH)
+TotalInc.nine.after.mean <- mean(ninemos.hh.after$TotalInc.HH)
+
+TotalInc.nine.one.med <- median(ninemos.hh.one$TotalInc.HH)
+TotalInc.nine.after.med <- median(ninemos.hh.after$TotalInc.HH)
+
+KL.inc.nine.one.mean <- mean(ninemos.hh.one$KL.inc.HH)
+KL.inc.nine.after.mean <- mean(ninemos.hh.after$KL.inc.HH)
+
+KL.inc.nine.one.med <- median(ninemos.hh.one$KL.inc.HH)
+KL.inc.nine.after.med <- median(ninemos.hh.after$KL.inc.HH)
+
+Welfare.inc.nine.one.mean <- mean(ninemos.hh.one$welfare.inc.HH)
+Welfare.inc.nine.after.mean <- mean(ninemos.hh.after$welfare.inc.HH)
+
+Welfare.inc.nine.one.med <- median(ninemos.hh.one$welfare.inc.HH)
+Welfare.inc.nine.after.med <- median(ninemos.hh.after$welfare.inc.HH)
+
+# mean and median income figures - 12 months and beyond
+TotalInc.twelve.one.mean <- mean(twelvemos.hh.one$TotalInc.HH)
+TotalInc.twelve.after.mean <- mean(twelvemos.hh.after$TotalInc.HH)
+
+TotalInc.twelve.one.med <- median(twelvemos.hh.one$TotalInc.HH)
+TotalInc.twelve.after.med <- median(twelvemos.hh.after$TotalInc.HH)
+
+KL.inc.twelve.one.mean <- mean(twelvemos.hh.one$KL.inc.HH)
+KL.inc.twelve.after.mean <- mean(twelvemos.hh.after$KL.inc.HH)
+
+KL.inc.twelve.one.med <- median(twelvemos.hh.one$KL.inc.HH)
+KL.inc.twelve.after.med <- median(twelvemos.hh.after$KL.inc.HH)
+
+Welfare.inc.twelve.one.mean <- mean(twelvemos.hh.one$welfare.inc.HH)
+Welfare.inc.twelve.after.mean <- mean(twelvemos.hh.after$welfare.inc.HH)
+
+Welfare.inc.twelve.one.med <- median(twelvemos.hh.one$welfare.inc.HH)
+Welfare.inc.twelve.after.med <- median(twelvemos.hh.after$welfare.inc.HH)
+
+#######################
+## SIX MONTH CHANGES ##
+#######################
+# Total Income
+tot.inc.six <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=sixmos.hh.one) +
+  geom_density(aes(x=TotalInc.HH, color = "6 months"), data=sixmos.hh.after) +
+  geom_vline(aes(xintercept = TotalInc.six.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.six.after.mean, colour="6 months")) + 
+    labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Six Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.six <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=sixmos.hh.one) +
+  geom_density(aes(x=KL.inc.HH, color= "6 months"), data=sixmos.hh.after) +
+  geom_vline(aes(xintercept = KL.inc.six.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.six.after.mean, colour="6 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Six Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.six <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=sixmos.hh.one) +
+  geom_density(aes(x=welfare.inc.HH, color="6 months"), data=sixmos.hh.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.six.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.six.after.mean, color="6 months")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Six Months After FII Enrollment")  +
+    theme(legend.title=element_blank())
+
+#########################
+## NINE MONTH CHANGES  ##
+#########################
+# Total Income
+tot.inc.nine <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=ninemos.hh.one) +
+  geom_density(aes(x=TotalInc.HH, color = "9 months"), data=ninemos.hh.after) +
+  geom_vline(aes(xintercept = TotalInc.nine.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.nine.after.mean, colour="9 months")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Nine Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.nine <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=ninemos.hh.one) +
+  geom_density(aes(x=KL.inc.HH, color= "9 months"), data=ninemos.hh.after) +
+  geom_vline(aes(xintercept = KL.inc.nine.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.nine.after.mean, colour="9 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Nine Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.nine <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=ninemos.hh.one) +
+  geom_density(aes(x=welfare.inc.HH, color="9 months"), data=ninemos.hh.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.nine.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.nine.after.mean, color="9 months")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Nine Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+##########################
+## TWELVE MONTH CHANGES ##
+##########################
+# Total Income
+tot.inc.twelve <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=twelvemos.hh.one) +
+  geom_density(aes(x=TotalInc.HH, color = "12 months"), data=twelvemos.hh.after) +
+  geom_vline(aes(xintercept = TotalInc.twelve.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.twelve.after.mean, colour="12 months")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Twelve Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.twelve <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
+  geom_density(aes(x=KL.inc.HH, color= "12 months"), data=twelvemos.hh.after) +
+  geom_vline(aes(xintercept = KL.inc.twelve.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.twelve.after.mean, colour="12 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Twelve Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.twelve <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
+  geom_density(aes(x=welfare.inc.HH, color="12 months"), data=twelvemos.hh.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.after.mean, color="12 months")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Twelve Months After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
 
 ###################################################################################
-##    MARGINAL PROPENSITY TO CONSUME AND PUBLIC CONSUMPTION BENEFITS OF FII      ##
+##            COMPARE DISTRIBUTIONS OF INCOME AT BASELINE AND                    ##
+##            6, 9, AND 12 REPORTING PERIODS AFTER ENROLLMENT                    ##
+##            Looking at dosage as opposed to pure time in FII                   ##
 ###################################################################################
+# subset for various exposure lengths
+sixpds.hh <- subset(my.hh.data, maxpds >= 7)
+ninepds.hh <- subset(my.hh.data, maxpds >= 10)
+twelvepds.hh <- subset(my.hh.data, maxpds >= 13)
+
+sixpds.hh.one <- subset(sixpds.hh, Periods == 1)
+ninepds.hh.one <- subset(ninepds.hh, Periods == 1)
+twelvepds.hh.one <- subset(twelvepds.hh, Periods == 1)
+
+sixpds.hh.after <- subset(sixpds.hh, Periods == 7)
+ninepds.hh.after <- subset(ninepds.hh, Periods == 10)
+twelvepds.hh.after <- subset(twelvepds.hh, Periods >= 13) # this is different to account for those who exceed 12 reporting periods
+
+# mean and median income figures - 6 reports
+TotalInc.sixpds.one.mean <- mean(sixpds.hh.one$TotalInc.HH)
+TotalInc.sixpds.after.mean <- mean(sixpds.hh.after$TotalInc.HH)
+
+TotalInc.sixpds.one.med <- median(sixpds.hh.one$TotalInc.HH)
+TotalInc.sixpds.after.med <- median(sixpds.hh.after$TotalInc.HH)
+
+KL.inc.sixpds.one.mean <- mean(sixpds.hh.one$KL.inc.HH)
+KL.inc.sixpds.after.mean <- mean(sixpds.hh.after$KL.inc.HH)
+
+KL.inc.sixpds.one.med <- median(sixpds.hh.one$KL.inc.HH)
+KL.inc.sixpds.after.med <- median(sixpds.hh.after$KL.inc.HH)
+
+Welfare.inc.sixpds.one.mean <- mean(sixpds.hh.one$welfare.inc.HH)
+Welfare.inc.sixpds.after.mean <- mean(sixpds.hh.after$welfare.inc.HH)
+
+Welfare.inc.sixpds.one.med <- median(sixpds.hh.one$welfare.inc.HH)
+Welfare.inc.sixpds.after.med <- median(sixpds.hh.after$welfare.inc.HH)
+
+# mean and median income figures - 9 reports
+TotalInc.ninepds.one.mean <- mean(ninepds.hh.one$TotalInc.HH)
+TotalInc.ninepds.after.mean <- mean(ninepds.hh.after$TotalInc.HH)
+
+TotalInc.ninepds.one.med <- median(ninepds.hh.one$TotalInc.HH)
+TotalInc.ninepds.after.med <- median(ninepds.hh.after$TotalInc.HH)
+
+KL.inc.ninepds.one.mean <- mean(ninepds.hh.one$KL.inc.HH)
+KL.inc.ninepds.after.mean <- mean(ninepds.hh.after$KL.inc.HH)
+
+KL.inc.ninepds.one.med <- median(ninepds.hh.one$KL.inc.HH)
+KL.inc.ninepds.after.med <- median(ninepds.hh.after$KL.inc.HH)
+
+Welfare.inc.ninepds.one.mean <- mean(ninepds.hh.one$welfare.inc.HH)
+Welfare.inc.ninepds.after.mean <- mean(ninepds.hh.after$welfare.inc.HH)
+
+Welfare.inc.ninepds.one.med <- median(ninepds.hh.one$welfare.inc.HH)
+Welfare.inc.ninepds.after.med <- median(ninepds.hh.after$welfare.inc.HH)
+
+# mean and median income figures - 12 reports and beyond
+TotalInc.twelvepds.one.mean <- mean(twelvepds.hh.one$TotalInc.HH)
+TotalInc.twelvepds.after.mean <- mean(twelvepds.hh.after$TotalInc.HH)
+
+TotalInc.twelvepds.one.med <- median(twelvepds.hh.one$TotalInc.HH)
+TotalInc.twelvepds.after.med <- median(twelvepds.hh.after$TotalInc.HH)
+
+KL.inc.twelvepds.one.mean <- mean(twelvepds.hh.one$KL.inc.HH)
+KL.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$KL.inc.HH)
+
+KL.inc.twelvepds.one.med <- median(twelvepds.hh.one$KL.inc.HH)
+KL.inc.twelvepds.after.med <- median(twelvepds.hh.after$KL.inc.HH)
+
+Welfare.inc.twelvepds.one.mean <- mean(twelvepds.hh.one$welfare.inc.HH)
+Welfare.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.inc.HH)
+
+Welfare.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.inc.HH)
+Welfare.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.inc.HH)
+
+
+
+##########################################################################
+##      MARGINAL PROPENSITY TO CONSUME AND PUBLIC BENEFITS OF FII       ##
+##########################################################################
 
 ## ASSUMPTIONs & INPUTS
 mpc <- 0.9
@@ -774,18 +1064,25 @@ bos.income.tax <- 0.052
 no.income.tax  <- 0.04  
 det.income.tax <- 0.0425 + 0.024
 
-## CALCULATE THE PUBLIC CONSUMPTION BENEFITS OF FII
-
-# the way to think about this is delta(income)*MPC*salestax 
-# will need to calculate separately for each FII location
-
+## CALCULATE THE PUBLIC (BUDGETARY) BENEFITS OF FII
+# delta(income)*MPC*(TAX_sales + TAX_income) 
+# will need to adjust for each FII location
 
 
-## CALCULATE THE BENEFIT TO THE REDUCTION IN THE USE OF GOVERNMENT ASSISTANCE
 
-## the way to think about this is delta(welfare)
-## might be smart to take the average of the first three months in FII vs. long-run performance
-## probably need to look at households whose involvement in FII is longer than 6 months
+## CALCULATE THE REDUCTION IN THE USE OF GOVERNMENT ASSISTANCE
+# delta(welfare)
+
+
+## TOTAL BENEFITS TO ENROLLMENT
+
+
+#############################################################################
+##                   RETURN ON INVESTMENT CALCULATION                      ##
+#############################################################################
+
+
+
 
 ## STOP LOGGING WORK
 sink()
