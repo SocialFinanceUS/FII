@@ -1043,6 +1043,110 @@ Welfare.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.inc.HH)
 Welfare.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.inc.HH)
 Welfare.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.inc.HH)
 
+########################
+## SIX PERIOD CHANGES ##
+########################
+# Total Income
+tot.inc.sixpds <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=sixpds.hh.one) +
+  geom_density(aes(x=TotalInc.HH, color = "6 periods"), data=sixpds.hh.after) +
+  geom_vline(aes(xintercept = TotalInc.sixpds.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.sixpds.after.mean, colour="6 periods")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Six Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.sixpds <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=sixpds.hh.one) +
+  geom_density(aes(x=KL.inc.HH, color= "6 periods"), data=sixpds.hh.after) +
+  geom_vline(aes(xintercept = KL.inc.sixpds.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.sixpds.after.mean, colour="6 periods")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Six Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.sixpds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=sixpds.hh.one) +
+  geom_density(aes(x=welfare.inc.HH, color="6 periods"), data=sixpds.hh.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.six.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.six.after.mean, color="6 periods")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Six Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+#########################
+## NINE PERIOD CHANGES ##
+#########################
+# Total Income
+tot.inc.ninepds <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=ninepds.hh.one) +
+  geom_density(aes(x=TotalInc.HH, color = "9 periods"), data=ninepds.hh.after) +
+  geom_vline(aes(xintercept = TotalInc.ninepds.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.ninepds.after.mean, colour="9 periods")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Nine Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.ninepds <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=ninepds.hh.one) +
+  geom_density(aes(x=KL.inc.HH, color= "9 periods"), data=ninepds.hh.after) +
+  geom_vline(aes(xintercept = KL.inc.ninepds.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.ninepds.after.mean, colour="9 periods")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Nine Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.ninepds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=ninepds.hh.one) +
+  geom_density(aes(x=welfare.inc.HH, color="9 periods"), data=ninepds.hh.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.nine.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.nine.after.mean, color="9 periods")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Nine Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+
+###########################
+## TWELVE PERIOD CHANGES ##
+###########################
+# Total Income
+tot.inc.twelvepds <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=twelvepds.hh.one) +
+  geom_density(aes(x=TotalInc.HH, color = "12 periods"), data=twelvepds.hh.after) +
+  geom_vline(aes(xintercept = TotalInc.twelvepds.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.twelvepds.after.mean, colour="12 periods")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Twelve Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.twelvepds <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvepds.hh.one) +
+  geom_density(aes(x=KL.inc.HH, color= "12 periods"), data=twelvepds.hh.after) +
+  geom_vline(aes(xintercept = KL.inc.twelvepds.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.twelvepds.after.mean, colour="12 periods")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Twelve Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.twelvepds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvepds.hh.one) +
+  geom_density(aes(x=welfare.inc.HH, color="12 periods"), data=twelvepds.hh.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.after.mean, color="12 periods")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Twelve Reporting Periods After FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+
+
+
+
 
 
 ##########################################################################
