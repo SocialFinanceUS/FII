@@ -203,7 +203,7 @@ sorted.merged$Gender[sorted.merged$Gender=="N"] <- "M"  # assumes that those who
 ## IMPUTATIONS FOR MISSING RESPONSES
 # for missing gender:
 table(sorted.merged$Gender)
-View(sorted.merged[sorted.merged$Gender=="",])
+# View(sorted.merged[sorted.merged$Gender=="",])
 
 # capitalize last and first names
 sorted.merged$FirstName <- toupper(sorted.merged$FirstName)
@@ -250,6 +250,10 @@ sorted.merged$City[grepl("S.BOSTON",sorted.merged$City)]     <-"SOUTHBOSTON"
 sorted.merged$City[grepl("SOBRANTE",sorted.merged$City)]     <-"ELSOBRANTE"
 
 # for service locations
+sorted.merged$ServiceLocation <- as.character(sorted.merged$ServiceLocation) # convert to character
+sorted.merged$ServiceLocation <- gsub(" ", "", sorted.merged$ServiceLocation)# eliminate spaces
+sorted.merged$ServiceLocation <- toupper(sorted.merged$ServiceLocation) # capitalize 
+
 sorted.merged$ServiceLocation[ ! duplicated( sorted.merged[c("ServiceLocation")])]
 table(sorted.merged$ServiceLocation)
 # View(sorted.merged[sorted.merged$ServiceLocation=="",])
@@ -270,15 +274,15 @@ table(sorted.merged$EducationLevel)
 
 sorted.merged$EducationLevel<-as.character(sorted.merged$EducationLevel) # convert to character
 sorted.merged$EducationLevel<-gsub(" ", "", sorted.merged$EducationLevel)# eliminate spaces
-sorted.merged$EducationLevel<-toupper(sorted.merged$EducationLevel)      # capitalize cities
+sorted.merged$EducationLevel<-toupper(sorted.merged$EducationLevel)      # capitalize 
 
 sorted.merged$SchoolName<-as.character(sorted.merged$SchoolName) # convert to character
 sorted.merged$SchoolName<-gsub(" ", "", sorted.merged$SchoolName)# eliminate spaces
-sorted.merged$SchoolName<-toupper(sorted.merged$SchoolName)      # capitalize cities
+sorted.merged$SchoolName<-toupper(sorted.merged$SchoolName)      # capitalize
 
 sorted.merged$PrimaryActivity<-as.character(sorted.merged$PrimaryActivity) # convert to character
 sorted.merged$PrimaryActivity<-gsub(" ", "", sorted.merged$PrimaryActivity)# eliminate spaces
-sorted.merged$PrimaryActivity<-toupper(sorted.merged$PrimaryActivity)      # capitalize cities
+sorted.merged$PrimaryActivity<-toupper(sorted.merged$PrimaryActivity)      # capitalize 
 
 sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & sorted.merged$age2<5 & !(is.na(sorted.merged$age2))]<-"NONE"
 sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & grepl("ELEMENTARY", sorted.merged$SchoolName) 
@@ -303,37 +307,35 @@ library(zoo)
 sorted.merged$JournalMoYr <- as.yearmon(sorted.merged$JournalDate) # month & year of JournalDate is  now variable
 sorted.merged$JournalMoYr <- as.Date(sorted.merged$JournalMoYr, format="%b %Y")
 
-
 ## ADDITIONAL FIXES THAT WERE SPOTTED LATER AND NEED CLEANED FOR HOUSEHOLDS
 ## (most of these relate to very long durations in FII that seemed wrong; trying to err on conservative side, though)
 ## changes made 01/06/2015
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 325  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 312  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 310  & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 308  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 282  & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 274  & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 270  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264  & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 254  & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 238  & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 236  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 227  & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 214  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 201  & sorted.merged$JournalMoYr == "2013-01-01" )]  <- "2014-01-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 194  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 190  & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 179  & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2014-06-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 156  & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 107  & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 102  & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
-
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 325 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 312 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 310 & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 308 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 282 & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 274 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 270 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264 & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 254 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 238 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 236 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 227 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 214 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 201 & sorted.merged$JournalMoYr == "2013-01-01" )]  <- "2014-01-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 194 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 190 & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 179 & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2014-06-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 156 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 107 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
+sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 102 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
 
 # set up a dummy count variable
 sorted.merged$Count <- 1
 
-# compute the frequency
+# compute the frequency of reporting periods
 freqs <- aggregate(Count ~ JournalMoYr, data=sorted.merged, FUN=length)
 
 # bring in libraries for plot
@@ -355,7 +357,7 @@ g <- ggplot(data=freqs,aes(x=JournalMoYr,y=Count)) +
           theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) + 
           ylab('Frequency') +
           xlab('Date') +
-          labs(title = 'Journal Entries by Date') 
+          labs(title = 'Journal Entries by Month') 
 print(g)
 ggsave(file="Monthly_Individuals_Reporting.pdf")
 
@@ -375,9 +377,9 @@ print(g2)
 ggsave(file="Monthly_Families_Reporting.pdf")
 
 # Create a variable that measures family reporting tenure
-# Let's make two separate variables:
-# 1 - calculate the length of time between first and last entry for a given family
-# 2 - calculate the number of entries for each family and individual 
+# Two separate variables:
+# 1 - the length of time between first and last entry for a given family
+# 2 - the number of entries for each family and individual 
 
 # calculate entries for each individual and show what family they belong to
 familymember.count <- aggregate(sorted.merged$FamilyMemberId, by=list(FamilyId=sorted.merged$FamilyId, 
@@ -713,12 +715,28 @@ names(hh.vars2) <- paste(c("Date","FamilyID","ChildSupportIncome", "EITC", "Food
 # merge to get household numeric income and expense data
 my.hh.data <- merge(hh.vars, hh.vars2, by=c("FamilyID.HH", "Date.HH"))
 
-## SPLIT INCOME INTO (1) CAPITAL & LABOR INCOME AND (2) WELFARE INCOME AT THE FAMILY LEVEL 
+# family characteristics we want to merge with our income variables
+temp.cols <- unique(my.data[,c("FamilyId.x", "FamilyType","ServiceLocation", "GroupCode")])
+
+# merge family characteristics with income variables
+my.hh.data <- merge(my.hh.data, temp.cols, by.x="FamilyID.HH", by.y="FamilyId.x")
+
+## INCOME CATEGORIES 
+# non-K&L income (welfare + child support)
+my.hh.data$nonKL.inc.HH <- my.hh.data$ChildSupportIncome.HH + my.hh.data$EITC.HH + my.hh.data$FoodStampIncome.HH +
+                           my.hh.data$WICIncome.HH + my.hh.data$HousingSubsidizedAmount.HH + my.hh.data$SSIIncome.HH +
+                           my.hh.data$CalWorksIncome.HH + my.hh.data$TransitionalMAIncome.HH + my.hh.data$UnemploymentIncome.HH 
 
 # monthly welfare income
-my.hh.data$welfare.inc.HH <- my.hh.data$ChildSupportIncome.HH + my.hh.data$EITC.HH + my.hh.data$FoodStampIncome.HH +
+my.hh.data$welfare.inc.HH <- my.hh.data$EITC.HH + my.hh.data$FoodStampIncome.HH +
                              my.hh.data$WICIncome.HH + my.hh.data$HousingSubsidizedAmount.HH + my.hh.data$SSIIncome.HH +
                              my.hh.data$CalWorksIncome.HH + my.hh.data$TransitionalMAIncome.HH + my.hh.data$UnemploymentIncome.HH 
+
+# monthly welfare income ex-EITC
+my.hh.data$welfare.exEITC.inc.HH <- my.hh.data$FoodStampIncome.HH + my.hh.data$WICIncome.HH + 
+                                    my.hh.data$HousingSubsidizedAmount.HH + my.hh.data$SSIIncome.HH +
+                                    my.hh.data$CalWorksIncome.HH + my.hh.data$TransitionalMAIncome.HH + 
+                                    my.hh.data$UnemploymentIncome.HH
 
 # monthly capital (K) & labor (L) income
 my.hh.data$KL.inc.HH <- my.hh.data$EmploymentIncome.HH + my.hh.data$OtherWorkIncome.HH + my.hh.data$BusinessIncome.HH +
@@ -867,6 +885,12 @@ Welfare.inc.twelve.after.mean <- mean(twelvemos.hh.after$welfare.inc.HH)
 
 Welfare.inc.twelve.one.med <- median(twelvemos.hh.one$welfare.inc.HH)
 Welfare.inc.twelve.after.med <- median(twelvemos.hh.after$welfare.inc.HH)
+
+Welfare.exEITC.inc.twelve.one.mean <- mean(twelvemos.hh.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelve.after.mean <- mean(twelvemos.hh.after$welfare.exEITC.inc.HH)
+
+Welfare.exEITC.inc.twelve.one.med <- median(twelvemos.hh.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelve.after.med <- median(twelvemos.hh.after$welfare.exEITC.inc.HH)
 
 #######################
 ## SIX MONTH CHANGES ##
@@ -1043,6 +1067,12 @@ Welfare.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.inc.HH)
 Welfare.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.inc.HH)
 Welfare.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.inc.HH)
 
+Welfare.exEITC.inc.twelvepds.one.mean <- mean(twelvepds.hh.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.exEITC.inc.HH)
+
+Welfare.exEITC.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.exEITC.inc.HH)
+
 ########################
 ## SIX PERIOD CHANGES ##
 ########################
@@ -1142,9 +1172,6 @@ welfare.inc.twelvepds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Ba
        y = "Density",
        title = "Household Welfare Income at Baseline and Twelve Reporting Periods After FII Enrollment")  +
   theme(legend.title=element_blank())
-
-
-
 
 
 
