@@ -1,7 +1,7 @@
 #####################################################################
 ########## Analysis of Family Independence Initiative Data ##########
-########## Alex Jutca                                      ##########
-########## November 3, 2014                                ##########
+##########                 Alex Jutca                      ##########
+##########              November 3, 2014                   ##########
 #####################################################################
 
 ## SET UP FOR WORK
@@ -892,6 +892,82 @@ Welfare.exEITC.inc.twelve.after.mean <- mean(twelvemos.hh.after$welfare.exEITC.i
 Welfare.exEITC.inc.twelve.one.med <- median(twelvemos.hh.one$welfare.exEITC.inc.HH)
 Welfare.exEITC.inc.twelve.after.med <- median(twelvemos.hh.after$welfare.exEITC.inc.HH)
 
+# SUBSET FOR FAMILY TYPE
+sixmos.hh.core <- subset(sixmos.hh, FamilyType == "FII Core")
+ninemos.hh.core <- subset(ninemos.hh, FamilyType == "FII Core")
+twelvemos.hh.core <- subset(twelvemos.hh, FamilyType == "FII Core")
+
+sixmos.hh.core.one <- subset(sixmos.hh.core, reportingmos == 1)
+ninemos.hh.core.one <- subset(ninemos.hh.core, reportingmos == 1)
+twelvemos.hh.core.one <- subset(twelvemos.hh.core, reportingmos == 1)
+
+sixmos.hh.core.after <- subset(sixmos.hh.core, reportingmos == 7)
+ninemos.hh.core.after <- subset(ninemos.hh.core, reportingmos == 10)
+twelvemos.hh.core.after <- subset(twelvemos.hh.core, reportingmos >= 13)
+
+# mean and median income figures - 6 months | FII Core
+TotalInc.six.core.one.mean <- mean(sixmos.hh.core.one$TotalInc.HH)
+TotalInc.six.core.after.mean <- mean(sixmos.hh.core.after$TotalInc.HH)
+
+TotalInc.six.core.one.med <- median(sixmos.hh.core.one$TotalInc.HH)
+TotalInc.six.core.after.med <- median(sixmos.hh.core.after$TotalInc.HH)
+
+KL.inc.six.core.one.mean <- mean(sixmos.hh.core.one$KL.inc.HH)
+KL.inc.six.core.after.mean <- mean(sixmos.hh.core.after$KL.inc.HH)
+
+KL.inc.six.core.one.med <- median(sixmos.hh.core.one$KL.inc.HH)
+KL.inc.six.core.after.med <- median(sixmos.hh.core.after$KL.inc.HH)
+
+Welfare.inc.six.core.one.mean <- mean(sixmos.hh.core.one$welfare.inc.HH)
+Welfare.inc.six.core.after.mean <- mean(sixmos.hh.core.after$welfare.inc.HH)
+
+Welfare.inc.six.core.one.med <- median(sixmos.hh.core.one$welfare.inc.HH)
+Welfare.inc.six.core.after.med <- median(sixmos.hh.core.after$welfare.inc.HH)
+
+# mean and median income figures - 9 months | FII Core
+TotalInc.nine.core.one.mean <- mean(ninemos.hh.core.one$TotalInc.HH)
+TotalInc.nine.core.after.mean <- mean(ninemos.hh.core.after$TotalInc.HH)
+
+TotalInc.nine.core.one.med <- median(ninemos.hh.core.one$TotalInc.HH)
+TotalInc.nine.core.after.med <- median(ninemos.hh.core.after$TotalInc.HH)
+
+KL.inc.nine.core.one.mean <- mean(ninemos.hh.core.one$KL.inc.HH)
+KL.inc.nine.core.after.mean <- mean(ninemos.hh.core.after$KL.inc.HH)
+
+KL.inc.nine.core.one.med <- median(ninemos.hh.core.one$KL.inc.HH)
+KL.inc.nine.core.after.med <- median(ninemos.hh.core.after$KL.inc.HH)
+
+Welfare.inc.nine.core.one.mean <- mean(ninemos.hh.core.one$welfare.inc.HH)
+Welfare.inc.nine.core.after.mean <- mean(ninemos.hh.core.after$welfare.inc.HH)
+
+Welfare.inc.nine.core.one.med <- median(ninemos.hh.core.one$welfare.inc.HH)
+Welfare.inc.nine.core.after.med <- median(ninemos.hh.core.after$welfare.inc.HH)
+
+# mean and median income figures - 12 months and beyond | FII Core
+TotalInc.twelve.core.one.mean <- mean(twelvemos.hh.core.one$TotalInc.HH)
+TotalInc.twelve.core.after.mean <- mean(twelvemos.hh.core.after$TotalInc.HH)
+
+TotalInc.twelve.core.one.med <- median(twelvemos.hh.core.one$TotalInc.HH)
+TotalInc.twelve.core.after.med <- median(twelvemos.hh.core.after$TotalInc.HH)
+
+KL.inc.twelve.core.one.mean <- mean(twelvemos.hh.core.one$KL.inc.HH)
+KL.inc.twelve.core.after.mean <- mean(twelvemos.hh.core.after$KL.inc.HH)
+
+KL.inc.twelve.core.one.med <- median(twelvemos.hh.core.one$KL.inc.HH)
+KL.inc.twelve.core.after.med <- median(twelvemos.hh.core.after$KL.inc.HH)
+
+Welfare.inc.twelve.core.one.mean <- mean(twelvemos.hh.core.one$welfare.inc.HH)
+Welfare.inc.twelve.core.after.mean <- mean(twelvemos.hh.core.after$welfare.inc.HH)
+
+Welfare.inc.twelve.core.one.med <- median(twelvemos.hh.core.one$welfare.inc.HH)
+Welfare.inc.twelve.core.after.med <- median(twelvemos.hh.core.after$welfare.inc.HH)
+
+Welfare.exEITC.inc.twelve.core.one.mean <- mean(twelvemos.hh.core.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelve.core.after.mean <- mean(twelvemos.hh.core.after$welfare.exEITC.inc.HH)
+
+Welfare.exEITC.inc.twelve.core.one.med <- median(twelvemos.hh.core.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelve.core.after.med <- median(twelvemos.hh.core.after$welfare.exEITC.inc.HH)
+
 #######################
 ## SIX MONTH CHANGES ##
 #######################
@@ -991,6 +1067,105 @@ welfare.inc.twelve <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Basel
        title = "Household Welfare Income at Baseline and Twelve Months After FII Enrollment")  +
   theme(legend.title=element_blank())
 
+##################################
+## SIX MONTH CHANGES - FII CORE ##
+##################################
+# Total Income
+tot.inc.six.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=sixmos.hh.core.one) +
+  geom_density(aes(x=TotalInc.HH, color = "6 months"), data=sixmos.hh.core.after) +
+  geom_vline(aes(xintercept = TotalInc.six.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.six.core.after.mean, colour="6 months")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Six Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.six.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=sixmos.hh.core.one) +
+  geom_density(aes(x=KL.inc.HH, color= "6 months"), data=sixmos.hh.core.after) +
+  geom_vline(aes(xintercept = KL.inc.six.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.six.core.after.mean, colour="6 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Six Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.six.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=sixmos.hh.core.one) +
+  geom_density(aes(x=welfare.inc.HH, color="6 months"), data=sixmos.hh.core.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.six.core.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.six.core.after.mean, color="6 months")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Six Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+###################################
+## NINE MONTH CHANGES - FII Core ##
+###################################
+# Total Income
+tot.inc.nine.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=ninemos.hh.core.one) +
+  geom_density(aes(x=TotalInc.HH, color = "9 months"), data=ninemos.hh.core.after) +
+  geom_vline(aes(xintercept = TotalInc.nine.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.nine.core.after.mean, colour="9 months")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Nine Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.nine.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=ninemos.hh.core.one) +
+  geom_density(aes(x=KL.inc.HH, color= "9 months"), data=ninemos.hh.core.after) +
+  geom_vline(aes(xintercept = KL.inc.nine.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.nine.core.after.mean, colour="9 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Nine Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.nine.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=ninemos.hh.core.one) +
+  geom_density(aes(x=welfare.inc.HH, color="9 months"), data=ninemos.hh.core.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.nine.core.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.nine.core.after.mean, color="9 months")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Nine Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+#####################################
+## TWELVE MONTH CHANGES - FII Core ##
+#####################################
+# Total Income
+tot.inc.twelve.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
+  geom_density(aes(x=TotalInc.HH, color = "12 months"), data=twelvemos.hh.core.after) +
+  geom_vline(aes(xintercept = TotalInc.twelve.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.twelve.core.after.mean, colour="12 months")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Twelve Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
+  geom_density(aes(x=KL.inc.HH, color= "12 months"), data=twelvemos.hh.core.after) +
+  geom_vline(aes(xintercept = KL.inc.twelve.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.twelve.core.after.mean, colour="12 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Twelve Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.twelve.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
+  geom_density(aes(x=welfare.inc.HH, color="12 months"), data=twelvemos.hh.core.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.core.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.core.after.mean, color="12 months")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Twelve Months After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
 
 ###################################################################################
 ##            COMPARE DISTRIBUTIONS OF INCOME AT BASELINE AND                    ##
@@ -1073,6 +1248,83 @@ Welfare.exEITC.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.exEIT
 Welfare.exEITC.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.exEITC.inc.HH)
 Welfare.exEITC.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.exEITC.inc.HH)
 
+
+# SUBSET FOR FAMILY TYPE
+sixpds.hh.core <- subset(sixpds.hh, FamilyType == "FII Core")
+ninepds.hh.core <- subset(ninepds.hh, FamilyType == "FII Core")
+twelvepds.hh.core <- subset(twelvepds.hh, FamilyType == "FII Core")
+
+sixpds.hh.core.one <- subset(sixpds.hh.core, Periods == 1)
+ninepds.hh.core.one <- subset(ninepds.hh.core, Periods == 1)
+twelvepds.hh.core.one <- subset(twelvepds.hh.core, Periods == 1)
+
+sixpds.hh.core.after <- subset(sixpds.hh.core, Periods == 7)
+ninepds.hh.core.after <- subset(ninepds.hh.core, Periods == 10)
+twelvepds.hh.core.after <- subset(twelvepds.hh.core, Periods >= 13)
+
+# mean and median income figures - 6 periods | FII Core
+TotalInc.sixpds.core.one.mean <- mean(sixpds.hh.core.one$TotalInc.HH)
+TotalInc.sixpds.core.after.mean <- mean(sixpds.hh.core.after$TotalInc.HH)
+
+TotalInc.sixpds.core.one.med <- median(sixpds.hh.core.one$TotalInc.HH)
+TotalInc.sixpds.core.after.med <- median(sixpds.hh.core.after$TotalInc.HH)
+
+KL.inc.sixpds.core.one.mean <- mean(sixpds.hh.core.one$KL.inc.HH)
+KL.inc.sixpds.core.after.mean <- mean(sixpds.hh.core.after$KL.inc.HH)
+
+KL.inc.sixpds.core.one.med <- median(sixpds.hh.core.one$KL.inc.HH)
+KL.inc.sixpds.core.after.med <- median(sixpds.hh.core.after$KL.inc.HH)
+
+Welfare.inc.sixpds.core.one.mean <- mean(sixpds.hh.core.one$welfare.inc.HH)
+Welfare.inc.sixpds.core.after.mean <- mean(sixpds.hh.core.after$welfare.inc.HH)
+
+Welfare.inc.sixpds.core.one.med <- median(sixpds.hh.core.one$welfare.inc.HH)
+Welfare.inc.sixpds.core.after.med <- median(sixpds.hh.core.after$welfare.inc.HH)
+
+# mean and median income figures - 9 periods | FII Core
+TotalInc.ninepds.core.one.mean <- mean(ninepds.hh.core.one$TotalInc.HH)
+TotalInc.ninepds.core.after.mean <- mean(ninepds.hh.core.after$TotalInc.HH)
+
+TotalInc.ninepds.core.one.med <- median(ninepds.hh.core.one$TotalInc.HH)
+TotalInc.ninepds.core.after.med <- median(ninepds.hh.core.after$TotalInc.HH)
+
+KL.inc.ninepds.core.one.mean <- mean(ninepds.hh.core.one$KL.inc.HH)
+KL.inc.ninepds.core.after.mean <- mean(ninepds.hh.core.after$KL.inc.HH)
+
+KL.inc.ninepds.core.one.med <- median(ninepds.hh.core.one$KL.inc.HH)
+KL.inc.ninepds.core.after.med <- median(ninepds.hh.core.after$KL.inc.HH)
+
+Welfare.inc.ninepds.core.one.mean <- mean(ninepds.hh.core.one$welfare.inc.HH)
+Welfare.inc.ninepds.core.after.mean <- mean(ninepds.hh.core.after$welfare.inc.HH)
+
+Welfare.inc.ninepds.core.one.med <- median(ninepds.hh.core.one$welfare.inc.HH)
+Welfare.inc.ninepds.core.after.med <- median(ninepds.hh.core.after$welfare.inc.HH)
+
+# mean and median income figures - 12 periods and beyond | FII Core
+TotalInc.twelvepds.core.one.mean <- mean(twelvepds.hh.core.one$TotalInc.HH)
+TotalInc.twelvepds.core.after.mean <- mean(twelvepds.hh.core.after$TotalInc.HH)
+
+TotalInc.twelvepds.core.one.med <- median(twelvepds.hh.core.one$TotalInc.HH)
+TotalInc.twelvepds.core.after.med <- median(twelvepds.hh.core.after$TotalInc.HH)
+
+KL.inc.twelvepds.core.one.mean <- mean(twelvepds.hh.core.one$KL.inc.HH)
+KL.inc.twelvepds.core.after.mean <- mean(twelvepds.hh.core.after$KL.inc.HH)
+
+KL.inc.twelvepds.core.one.med <- median(twelvepds.hh.core.one$KL.inc.HH)
+KL.inc.twelvepds.core.after.med <- median(twelvepds.hh.core.after$KL.inc.HH)
+
+Welfare.inc.twelvepds.core.one.mean <- mean(twelvepds.hh.core.one$welfare.inc.HH)
+Welfare.inc.twelvepds.core.after.mean <- mean(twelvepds.hh.core.after$welfare.inc.HH)
+
+Welfare.inc.twelvepds.core.one.med <- median(twelvepds.hh.core.one$welfare.inc.HH)
+Welfare.inc.twelvepds.core.after.med <- median(twelvepds.hh.core.after$welfare.inc.HH)
+
+Welfare.exEITC.inc.twelvepds.core.one.mean <- mean(twelvepds.hh.core.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelvepds.core.after.mean <- mean(twelvepds.hh.core.after$welfare.exEITC.inc.HH)
+
+Welfare.exEITC.inc.twelvepds.core.one.med <- median(twelvepds.hh.core.one$welfare.exEITC.inc.HH)
+Welfare.exEITC.inc.twelvepds.core.after.med <- median(twelvepds.hh.core.after$welfare.exEITC.inc.HH)
+
 ########################
 ## SIX PERIOD CHANGES ##
 ########################
@@ -1139,7 +1391,6 @@ welfare.inc.ninepds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Base
        title = "Household Welfare Income at Baseline and Nine Reporting Periods After FII Enrollment")  +
   theme(legend.title=element_blank())
 
-
 ###########################
 ## TWELVE PERIOD CHANGES ##
 ###########################
@@ -1174,6 +1425,104 @@ welfare.inc.twelvepds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Ba
   theme(legend.title=element_blank())
 
 
+###################################
+## SIX PERIOD CHANGES - FII CORE ##
+###################################
+# Total Income
+tot.inc.sixpds.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=sixpds.hh.core.one) +
+  geom_density(aes(x=TotalInc.HH, color = "6 periods"), data=sixpds.hh.core.after) +
+  geom_vline(aes(xintercept = TotalInc.sixpds.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.sixpds.core.after.mean, colour="6 periods")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Six Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.sixpds.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=sixpds.hh.core.one) +
+  geom_density(aes(x=KL.inc.HH, color= "6 periods"), data=sixpds.hh.core.after) +
+  geom_vline(aes(xintercept = KL.inc.sixpds.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.sixpds.core.after.mean, colour="6 months")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Six Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.sixpds.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=sixpds.hh.core.one) +
+  geom_density(aes(x=welfare.inc.HH, color="6 periods"), data=sixpds.hh.core.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.sixpds.core.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.sixpds.core.after.mean, color="6 periods")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Six Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+####################################
+## NINE PERIOD CHANGES - FII Core ##
+####################################
+# Total Income
+tot.inc.ninepds.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=ninepds.hh.core.one) +
+  geom_density(aes(x=TotalInc.HH, color = "9 periods"), data=ninepds.hh.core.after) +
+  geom_vline(aes(xintercept = TotalInc.ninepds.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.ninepds.core.after.mean, colour="9 periods")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Nine Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.ninepds.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=ninepds.hh.core.one) +
+  geom_density(aes(x=KL.inc.HH, color= "9 periods"), data=ninepds.hh.core.after) +
+  geom_vline(aes(xintercept = KL.inc.ninepds.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.ninepds.core.after.mean, colour="9 periods")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Nine Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.ninepds.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=ninepds.hh.core.one) +
+  geom_density(aes(x=welfare.inc.HH, color="9 periods"), data=ninepds.hh.core.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.ninepds.core.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.ninepds.core.after.mean, color="9 periods")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Nine Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+#######################################
+## TWELVE PERIOD CHANGES - FII Core  ##
+#######################################
+# Total Income
+tot.inc.twelvepds.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=twelvepds.hh.core.one) +
+  geom_density(aes(x=TotalInc.HH, color = "12 periods"), data=twelvepds.hh.core.after) +
+  geom_vline(aes(xintercept = TotalInc.twelvepds.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = TotalInc.twelvepds.core.after.mean, colour="12 periods")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and Twelve Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income
+kl.inc.twelvepds.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvepds.hh.core.one) +
+  geom_density(aes(x=KL.inc.HH, color= "12 periods"), data=twelvepds.hh.core.after) +
+  geom_vline(aes(xintercept = KL.inc.twelvepds.core.one.mean, colour="Baseline")) + 
+  geom_vline(aes(xintercept = KL.inc.twelvepds.core.after.mean, colour="12 periods")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and Twelve Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# Welfare Income
+welfare.inc.twelvepds.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvepds.hh.core.one) +
+  geom_density(aes(x=welfare.inc.HH, color="12 periods"), data=twelvepds.hh.core.after) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelvepds.core.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelvepds.core.after.mean, color="12 periods")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and Twelve Periods After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
 
 
 ##########################################################################
