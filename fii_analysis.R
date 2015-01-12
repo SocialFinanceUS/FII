@@ -297,7 +297,7 @@ sorted.merged$HousingSubsized[sorted.merged$HousingSubsidizedAmount>0] <- "Yes"
 sorted.merged$ReceiveWICIncome[sorted.merged$WICIncome>0] <- "Yes"
 
 # check dates
-View(sorted.merged$JournalDate[ ! duplicated( sorted.merged[c("JournalDate")])]) # unique JournalDates
+# View(sorted.merged$JournalDate[ ! duplicated( sorted.merged[c("JournalDate")])]) # unique JournalDates
 sorted.merged$DayofWk <- as.numeric(format(sorted.merged$JournalDate, "%d")) # day
 sorted.merged$Month   <- as.numeric(format(sorted.merged$JournalDate, "%m")) # month
 sorted.merged$Year    <- as.numeric(format(sorted.merged$JournalDate, "%Y")) # year
@@ -1046,6 +1046,8 @@ tot.inc.twelve <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), 
        y = "Density",
        title = "Household Total Income at Baseline and Twelve Months After FII Enrollment")  +
   theme(legend.title=element_blank())
+print(tot.inc.twelve)
+ggsave(file= "TotInc_12mo.pdf", tot.inc.twelve)
 
 # K & L Income
 kl.inc.twelve <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
@@ -1066,6 +1068,8 @@ welfare.inc.twelve <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Basel
        y = "Density",
        title = "Household Welfare Income at Baseline and Twelve Months After FII Enrollment")  +
   theme(legend.title=element_blank())
+print(welfare.inc.twelve)
+ggsave(file= "Welfare_12mo.pdf", welfare.inc.twelve)
 
 ##################################
 ## SIX MONTH CHANGES - FII CORE ##
@@ -1143,8 +1147,10 @@ tot.inc.twelve.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baselin
   geom_vline(aes(xintercept = TotalInc.twelve.core.after.mean, colour="12 months")) + 
   labs(x = "Monthly Total Income", 
        y = "Density",
-       title = "Household Total Income at Baseline and Twelve Months After FII Enrollment for FII Core")  +
+       title = "Household Total Income at Baseline and Twelve Months\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
+print(tot.inc.twelve.core)
+ggsave(file= "TotalInc_12mo_Core.pdf", tot.inc.twelve.core)
 
 # K & L Income
 kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
@@ -1163,9 +1169,10 @@ welfare.inc.twelve.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="
   geom_vline(aes(xintercept = Welfare.inc.twelve.core.after.mean, color="12 months")) + 
   labs(x = "Monthly Welfare Income", 
        y = "Density",
-       title = "Household Welfare Income at Baseline and Twelve Months After FII Enrollment for FII Core")  +
+       title = "Household Welfare Income at Baseline and Twelve Months\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
-
+print(welfare.inc.twelve.core)
+ggsave(file= "Welfare_12mo_Core.pdf", welfare.inc.twelve.core)
 
 ###################################################################################
 ##            COMPARE DISTRIBUTIONS OF INCOME AT BASELINE AND                    ##
@@ -1401,8 +1408,10 @@ tot.inc.twelvepds <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"
   geom_vline(aes(xintercept = TotalInc.twelvepds.after.mean, colour="12 periods")) + 
   labs(x = "Monthly Total Income", 
        y = "Density",
-       title = "Household Total Income at Baseline and Twelve Reporting Periods After FII Enrollment")  +
+       title = "Household Total Income at Baseline and Twelve Reporting Periods\n After FII Enrollment")  +
   theme(legend.title=element_blank())
+print(tot.inc.twelvepds)
+ggsave(file= "TotalInc_12pds.pdf", tot.inc.twelvepds)
 
 # K & L Income
 kl.inc.twelvepds <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvepds.hh.one) +
@@ -1417,13 +1426,14 @@ kl.inc.twelvepds <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), 
 # Welfare Income
 welfare.inc.twelvepds <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvepds.hh.one) +
   geom_density(aes(x=welfare.inc.HH, color="12 periods"), data=twelvepds.hh.after) + 
-  geom_vline(aes(xintercept = Welfare.inc.twelve.one.mean, color="Baseline")) + 
-  geom_vline(aes(xintercept = Welfare.inc.twelve.after.mean, color="12 periods")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelvepds.one.mean, color="Baseline")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelvepds.after.mean, color="12 periods")) + 
   labs(x = "Monthly Welfare Income", 
        y = "Density",
-       title = "Household Welfare Income at Baseline and Twelve Reporting Periods After FII Enrollment")  +
+       title = "Household Welfare Income at Baseline and Twelve Reporting Periods\n After FII Enrollment")  +
   theme(legend.title=element_blank())
-
+print(welfare.inc.twelvepds)
+ggsave(file= "Welfare_12pds.pdf", welfare.inc.twelvepds)
 
 ###################################
 ## SIX PERIOD CHANGES - FII CORE ##
@@ -1501,8 +1511,10 @@ tot.inc.twelvepds.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Base
   geom_vline(aes(xintercept = TotalInc.twelvepds.core.after.mean, colour="12 periods")) + 
   labs(x = "Monthly Total Income", 
        y = "Density",
-       title = "Household Total Income at Baseline and Twelve Periods After FII Enrollment for FII Core")  +
+       title = "Household Total Income at Baseline and Twelve Periods\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
+print(tot.inc.twelvepds.core)
+ggsave(file= "TotInc_12pds_Core.pdf", tot.inc.twelvepds.core)
 
 # K & L Income
 kl.inc.twelvepds.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvepds.hh.core.one) +
@@ -1521,15 +1533,129 @@ welfare.inc.twelvepds.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, colo
   geom_vline(aes(xintercept = Welfare.inc.twelvepds.core.after.mean, color="12 periods")) + 
   labs(x = "Monthly Welfare Income", 
        y = "Density",
-       title = "Household Welfare Income at Baseline and Twelve Periods After FII Enrollment for FII Core")  +
+       title = "Household Welfare Income at Baseline and Twelve Periods\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
+print(welfare.inc.twelvepds.core)
+ggsave(file= "Welfare_12pds_Core.pdf", welfare.inc.twelvepds.core)
+
+####################################################
+##      Summary of 12-Month Income Changes by     ##    
+##        Service Location and Family Type        ##
+####################################################
+## BOSTON
+# core
+BOS.total.core <-
+BOS.welfare.core <-
+BOS.kl.core <-
+BOS.core.number <- length()  
+
+# overall
+BOS.total <-
+BOS.welfare <-
+BOS.kl <- 
+BOS.number <- length()
+
+## DETROIT
+# core
+DET.total.core <-
+DET.welfare.core <-
+DET.kl.core <-
+DET.core.number <- length()  
+
+# overall
+DET.total <-
+DET.welfare <-
+DET.kl <- 
+DET.number <- length()
+
+## FRESNO
+# core
+FRESNO.total.core <-
+FRESNO.welfare.core <-
+FRESNO.kl.core <-
+FRESNO.core.number <- length()  
+
+# overall
+FRESNO.total <-
+FRESNO.welfare <-
+FRESNO.kl <- 
+FRESNO.number <- length()
+
+## NEW ORLEANS
+# core
+NO.total.core <-
+NO.welfare.core <-
+NO.kl.core <-
+NO.core.number <- length()  
+
+# overall
+NO.total <-
+NO.welfare <-
+NO.kl <- 
+NO.number <- length()
+
+## OAKLAND
+# core
+OAK.total.core <-
+OAK.welfare.core <-
+OAK.kl.core <-
+OAK.core.number <- length()  
+
+# overall
+OAK.total <-
+OAK.welfare <-
+OAK.kl <- 
+OAK.number <- length()
+
+## SAN FRANCISCO
+# core
+SF.total.core <-
+SF.welfare.core <-
+SF.kl.core <-
+SF.core.number <- length()  
+
+# overall
+SF.total <-
+SF.welfare <-
+SF.kl <- 
+SF.number <- length()
+
+## ALL LOCATIONS
+# core
+ALL.total.core <- TotalInc.twelve.core.after.mean - TotalInc.twelve.core.one.mean 
+ALL.welfare.core <- Welfare.inc.twelve.core.after.mean - Welfare.inc.twelve.core.one.mean
+ALL.kl.core <- KL.inc.twelve.core.after.mean - KL.inc.twelve.core.one.mean
+ALL.core.number <- length()
+
+# overall
+ALL.total <- TotalInc.twelve.after.mean - TotalInc.twelve.one.mean 
+ALL.welfare <- Welfare.inc.twelve.after.mean - Welfare.inc.twelve.one.mean 
+ALL.kl <- KL.inc.twelve.after.mean - KL.inc.twelve.one.mean
+ALL.number <- length()
+
+## COMBINE INTO TABLE
+
+#totalincome <- rbind(BOS.total.core, BOS.total, DET.total.core, DET.total, FRESNO.total.core, 
+#     FRESNO.total, NO.total.core, NO.total, OAK.total.core, OAK.total, SF.total.core, SF.total)
+
+#welfare <- rbind(BOS.welfare.core, BOS.welfare, DET.welfare.core, DET.welfare, FRESNO.welfare.core, 
+#      FRESNO.welfare, NO.welfare.core, NO.welfare, OAK.welfare.core, OAK.welfare, SF.welfare.core, SF.welfare)
+
+#kl <- rbind(BOS.kl.core, BOS.kl, DET.kl.core, DET.kl, FRESNO.kl.core, 
+#      FRESNO.kl, NO.kl.core, NO.kl, OAK.kl.core, OAK.kl, SF.kl.core, SF.kl)
+
+#numobs <- rbind(BOS.core.number, BOS.number, DET.core.number, DET.number, FRESNO.core.number, 
+#     FRESNO.number, NO.core.number, NO.number, OAK.core.number, OAK.number, SF.core.number, SF.number)
+
+#first.table.income <- cbind(totalincome, welfare, kl, numobs)
+
 
 
 ##########################################################################
 ##      MARGINAL PROPENSITY TO CONSUME AND PUBLIC BENEFITS OF FII       ##
 ##########################################################################
 
-## ASSUMPTIONs & INPUTS
+## ASSUMPTIONS & INPUTS
 mpc <- 0.9
 
 sf.sales.tax  <- 0.0875
