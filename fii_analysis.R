@@ -746,7 +746,7 @@ my.hh.data$KL.inc.HH <- my.hh.data$EmploymentIncome.HH + my.hh.data$OtherWorkInc
 my.hh.data$hsg.exp.HH <- my.hh.data$MortgageAmount.HH + my.hh.data$HousingRentAmount.HH
 
 # total monthly income at HH level
-my.hh.data$TotalInc.HH <- my.hh.data$KL.inc.HH + my.hh.data$welfare.inc.HH 
+my.hh.data$TotalInc.HH <- my.hh.data$nonKL.inc.HH + my.hh.data$KL.inc.HH 
 
 # add variable for cumulative months household is reporting in FII
 my.hh.data <- ddply(my.hh.data, .(FamilyID.HH), mutate, 
@@ -1255,7 +1255,6 @@ Welfare.exEITC.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.exEIT
 Welfare.exEITC.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.exEITC.inc.HH)
 Welfare.exEITC.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.exEITC.inc.HH)
 
-
 # SUBSET FOR FAMILY TYPE
 sixpds.hh.core <- subset(sixpds.hh, FamilyType == "FII Core")
 ninepds.hh.core <- subset(ninepds.hh, FamilyType == "FII Core")
@@ -1544,112 +1543,163 @@ ggsave(file= "Welfare_12pds_Core.pdf", welfare.inc.twelvepds.core)
 ####################################################
 ## BOSTON
 # core
-BOS.total.core <-
-BOS.welfare.core <-
-BOS.kl.core <-
-BOS.core.number <- length()  
+BOS.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="BOSTON" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                  mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+BOS.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="BOSTON" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                    mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+BOS.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="BOSTON" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+               mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+BOS.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
 
 # overall
-BOS.total <-
-BOS.welfare <-
-BOS.kl <- 
-BOS.number <- length()
+BOS.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="BOSTON"]) - 
+             mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
+BOS.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="BOSTON"]) - 
+               mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
+BOS.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="BOSTON"]) - 
+          mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
+BOS.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
 
 ## DETROIT
 # core
-DET.total.core <-
-DET.welfare.core <-
-DET.kl.core <-
-DET.core.number <- length()  
+DET.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="DETROIT" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                  mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+DET.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="DETROIT" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                    mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+DET.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="DETROIT" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+               mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+DET.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
 
 # overall
-DET.total <-
-DET.welfare <-
-DET.kl <- 
-DET.number <- length()
+DET.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="DETROIT"]) - 
+             mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
+DET.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="DETROIT"]) - 
+               mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
+DET.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="DETROIT"]) - 
+          mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
+DET.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
 
 ## FRESNO
 # core
-FRESNO.total.core <-
-FRESNO.welfare.core <-
-FRESNO.kl.core <-
-FRESNO.core.number <- length()  
+FRESNO.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="FRESNO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                     mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+FRESNO.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="FRESNO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                       mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+FRESNO.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="FRESNO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                  mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+FRESNO.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
 
 # overall
-FRESNO.total <-
-FRESNO.welfare <-
-FRESNO.kl <- 
-FRESNO.number <- length()
+FRESNO.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="FRESNO"]) - 
+                mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
+FRESNO.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="FRESNO"]) - 
+                  mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
+FRESNO.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="FRESNO"]) - 
+             mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
+FRESNO.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
 
 ## NEW ORLEANS
 # core
-NO.total.core <-
-NO.welfare.core <-
-NO.kl.core <-
-NO.core.number <- length()  
+NO.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                 mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+NO.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                   mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+NO.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+              mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+NO.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
 
 # overall
-NO.total <-
-NO.welfare <-
-NO.kl <- 
-NO.number <- length()
+NO.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="NEWORLEANS"]) - 
+            mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
+NO.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="NEWORLEANS"]) - 
+              mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
+NO.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="NEWORLEANS"]) - 
+         mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
+NO.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
 
 ## OAKLAND
 # core
-OAK.total.core <-
-OAK.welfare.core <-
-OAK.kl.core <-
-OAK.core.number <- length()  
+OAK.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="OAKLAND" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                  mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+OAK.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="OAKLAND" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                    mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+OAK.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="OAKLAND" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+               mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+OAK.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
 
 # overall
-OAK.total <-
-OAK.welfare <-
-OAK.kl <- 
-OAK.number <- length()
+OAK.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="OAKLAND"]) - 
+             mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
+OAK.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="OAKLAND"]) - 
+               mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
+OAK.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="OAKLAND"]) - 
+          mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
+OAK.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
 
 ## SAN FRANCISCO
 # core
-SF.total.core <-
-SF.welfare.core <-
-SF.kl.core <-
-SF.core.number <- length()  
+SF.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                 mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+SF.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+                   mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+SF.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
+              mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
+SF.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
 
 # overall
-SF.total <-
-SF.welfare <-
-SF.kl <- 
-SF.number <- length()
+SF.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="SANFRANCISCO"]) - 
+            mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
+SF.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="SANFRANCISCO"]) - 
+              mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
+SF.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="SANFRANCISCO"]) - 
+         mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
+SF.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
 
 ## ALL LOCATIONS
 # core
 ALL.total.core <- TotalInc.twelve.core.after.mean - TotalInc.twelve.core.one.mean 
 ALL.welfare.core <- Welfare.inc.twelve.core.after.mean - Welfare.inc.twelve.core.one.mean
 ALL.kl.core <- KL.inc.twelve.core.after.mean - KL.inc.twelve.core.one.mean
-ALL.core.number <- length()
+ALL.core.number <- length(twelvemos.hh.core.one$TotalInc.HH)
 
 # overall
 ALL.total <- TotalInc.twelve.after.mean - TotalInc.twelve.one.mean 
 ALL.welfare <- Welfare.inc.twelve.after.mean - Welfare.inc.twelve.one.mean 
 ALL.kl <- KL.inc.twelve.after.mean - KL.inc.twelve.one.mean
-ALL.number <- length()
+ALL.number <- length(twelvemos.hh.one$TotalInc.HH)
 
 ## COMBINE INTO TABLE
+totalincome <- rbind(BOS.total.core, BOS.total, DET.total.core, DET.total, FRESNO.total.core, 
+                     FRESNO.total, NO.total.core, NO.total, OAK.total.core, OAK.total, SF.total.core, SF.total, ALL.total.core, ALL.total)
 
-#totalincome <- rbind(BOS.total.core, BOS.total, DET.total.core, DET.total, FRESNO.total.core, 
-#     FRESNO.total, NO.total.core, NO.total, OAK.total.core, OAK.total, SF.total.core, SF.total)
+welfare <- rbind(BOS.welfare.core, BOS.welfare, DET.welfare.core, DET.welfare, FRESNO.welfare.core, 
+                 FRESNO.welfare, NO.welfare.core, NO.welfare, OAK.welfare.core, OAK.welfare, SF.welfare.core, SF.welfare, ALL.welfare.core, ALL.welfare)
 
-#welfare <- rbind(BOS.welfare.core, BOS.welfare, DET.welfare.core, DET.welfare, FRESNO.welfare.core, 
-#      FRESNO.welfare, NO.welfare.core, NO.welfare, OAK.welfare.core, OAK.welfare, SF.welfare.core, SF.welfare)
+kl <- rbind(BOS.kl.core, BOS.kl, DET.kl.core, DET.kl, FRESNO.kl.core, 
+            FRESNO.kl, NO.kl.core, NO.kl, OAK.kl.core, OAK.kl, SF.kl.core, SF.kl, ALL.kl.core, ALL.kl)
 
-#kl <- rbind(BOS.kl.core, BOS.kl, DET.kl.core, DET.kl, FRESNO.kl.core, 
-#      FRESNO.kl, NO.kl.core, NO.kl, OAK.kl.core, OAK.kl, SF.kl.core, SF.kl)
+numobs <- rbind(BOS.core.number, BOS.number, DET.core.number, DET.number, FRESNO.core.number, 
+                FRESNO.number, NO.core.number, NO.number, OAK.core.number, OAK.number, SF.core.number, SF.number, ALL.core.number, ALL.number)
 
-#numobs <- rbind(BOS.core.number, BOS.number, DET.core.number, DET.number, FRESNO.core.number, 
-#     FRESNO.number, NO.core.number, NO.number, OAK.core.number, OAK.number, SF.core.number, SF.number)
+first.table.income <- cbind(totalincome, welfare, kl, numobs)
 
-#first.table.income <- cbind(totalincome, welfare, kl, numobs)
+# output results
+write.csv(first.table.income, file = "table_of_12mochanges.csv")
 
+## DIFFERENCES FROM BASELINE OVER THE COURSE OF A YEAR
+# all families
+twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.inc.HH - KL.inc.HH[1])
+twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
+twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1]) 
 
+# core families
+twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.change = KL.inc.HH - KL.inc.HH[1])
+twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
+twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1])
+
+## 12-MONTH DIFFERENCES SUBSET (only keep the year-over-year change)
+twelvemos.hh.small <- subset(twelvemos.hh, reportingmos == 13) 
+twelvemos.hh.core.small <- subset(twelvemos.hh.core, reportingmos == 13) 
 
 ##########################################################################
 ##      MARGINAL PROPENSITY TO CONSUME AND PUBLIC BENEFITS OF FII       ##
@@ -1663,24 +1713,61 @@ oak.sales.tax <- 0.09
 bos.sales.tax <- 0.0625
 no.sales.tax  <- 0.09
 det.sales.tax <- 0.06
+fresno.sales.tax <- 0.08225
 
 sf.income.tax  <- 0.06
 oak.income.tax <- 0.06
+fresno.income.tax <- 0.06
 bos.income.tax <- 0.052
 no.income.tax  <- 0.04  
 det.income.tax <- 0.0425 + 0.024
 
-## CALCULATE THE PUBLIC (BUDGETARY) BENEFITS OF FII
-# delta(income)*MPC*(TAX_sales + TAX_income) 
+## CALCULATE THE MARGINAL INCOME TAX BENEFITS OF FII
+# delta(income)*TAX_income 
 # will need to adjust for each FII location
 
+# all families
+twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "BOSTON"] <- twelvemos.hh$kl.change * bos.income.tax
+twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh$kl.change * sf.income.tax
+twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "OAKLAND"] <- twelvemos.hh$kl.change * oak.income.tax
+twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "FRESNO"] <- twelvemos.hh$kl.change * fresno.income.tax
+twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "DETROIT"] <- twelvemos.hh$kl.change * det.income.tax
+twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh$kl.change * no.income.tax
 
+# core families
+twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "BOSTON"] <- twelvemos.hh.core$kl.change * bos.income.tax
+twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh.core$kl.change * sf.income.tax
+twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "OAKLAND"] <- twelvemos.hh.core$kl.change * oak.income.tax
+twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "FRESNO"] <- twelvemos.hh.core$kl.change * fresno.income.tax
+twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "DETROIT"] <- twelvemos.hh.core$kl.change * det.income.tax
+twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh.core$kl.change * no.income.tax
 
-## CALCULATE THE REDUCTION IN THE USE OF GOVERNMENT ASSISTANCE
+## CALCULATE THE MARGINAL SALES TAX BENEFITS OF FII
+# delta(income)*MPC*(TAX_sales)
+
+# all families
+twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "BOSTON"] <- twelvemos.hh$TotalInc.change * bos.sales.tax
+twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh$TotalInc.change * sf.sales.tax
+twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "OATotalIncAND"] <- twelvemos.hh$TotalInc.change * oak.sales.tax
+twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "FRESNO"] <- twelvemos.hh$TotalInc.change * fresno.sales.tax
+twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "DETROIT"] <- twelvemos.hh$TotalInc.change * det.sales.tax
+twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh$TotalInc.change * no.sales.tax
+
+# core families
+twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "BOSTON"] <- twelvemos.hh.core$TotalInc.change * bos.sales.tax
+twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh.core$TotalInc.change * sf.sales.tax
+twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "OATotalIncAND"] <- twelvemos.hh.core$TotalInc.change * oak.sales.tax
+twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "FRESNO"] <- twelvemos.hh.core$TotalInc.change * fresno.sales.tax
+twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "DETROIT"] <- twelvemos.hh.core$TotalInc.change * det.sales.tax
+twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh.core$TotalInc.change * no.sales.tax
+
+## CALCULATE THE MARGINAL REDUCTION IN THE USE OF GOVERNMENT ASSISTANCE
 # delta(welfare)
 
 
-## TOTAL BENEFITS TO ENROLLMENT
+
+
+## TOTAL MARGINAL BENEFITS TO ENROLLMENT
 
 
 #############################################################################
