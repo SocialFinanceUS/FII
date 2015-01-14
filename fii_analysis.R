@@ -1697,9 +1697,7 @@ twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.chan
 twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
 twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1])
 
-## 12-MONTH DIFFERENCES SUBSET (only keep the year-over-year change)
-twelvemos.hh.small <- subset(twelvemos.hh, reportingmos == 13) 
-twelvemos.hh.core.small <- subset(twelvemos.hh.core, reportingmos == 13) 
+
 
 ##########################################################################
 ##      MARGINAL PROPENSITY TO CONSUME AND PUBLIC BENEFITS OF FII       ##
@@ -1761,14 +1759,13 @@ twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "FRESNO"] <- 
 twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "DETROIT"] <- twelvemos.hh.core$TotalInc.change * det.sales.tax
 twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh.core$TotalInc.change * no.sales.tax
 
-## CALCULATE THE MARGINAL REDUCTION IN THE USE OF GOVERNMENT ASSISTANCE
-# delta(welfare)
+## TOTAL MONTHLY MARGINAL BENEFITS TO ENROLLMENT
+twelvemos.hh$tot.pub.benefits <- twelvemos.hh$inctaxrev + twelvemos.hh$salestaxrev - twelvemos.hh$welfare.change
+twelvemos.hh.core$tot.pub.benefits <- twelvemos.hh.core$inctaxrev + twelvemos.hh.core$salestaxrev - twelvemos.hh.core$welfare.change
 
-
-
-
-## TOTAL MARGINAL BENEFITS TO ENROLLMENT
-
+## 12-MONTH DIFFERENCES SUBSET (only keep the year-over-year change)
+twelvemos.hh.small <- subset(twelvemos.hh, reportingmos == 13) 
+twelvemos.hh.core.small <- subset(twelvemos.hh.core, reportingmos == 13) 
 
 #############################################################################
 ##                   RETURN ON INVESTMENT CALCULATION                      ##
