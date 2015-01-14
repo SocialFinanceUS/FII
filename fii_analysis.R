@@ -1159,7 +1159,7 @@ kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline")
   geom_vline(aes(xintercept = KL.inc.twelve.core.after.mean, colour="12 months")) + 
   labs(x = "Monthly Capital and Labor Income", 
        y = "Density",
-       title = "Household Capital and Labor Income at Baseline and Twelve Months After FII Enrollment for FII Core")  +
+       title = "Household Capital and Labor Income at Baseline and Twelve Months\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
 
 # Welfare Income
@@ -1697,8 +1697,6 @@ twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.chan
 twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
 twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1])
 
-
-
 ##########################################################################
 ##      MARGINAL PROPENSITY TO CONSUME AND PUBLIC BENEFITS OF FII       ##
 ##########################################################################
@@ -1715,57 +1713,100 @@ fresno.sales.tax <- 0.08225
 
 sf.income.tax  <- 0.06
 oak.income.tax <- 0.06
-fresno.income.tax <- 0.06
 bos.income.tax <- 0.052
 no.income.tax  <- 0.04  
 det.income.tax <- 0.0425 + 0.024
+fresno.income.tax <- 0.06
 
-## CALCULATE THE MARGINAL INCOME TAX BENEFITS OF FII
-# delta(income)*TAX_income 
-# will need to adjust for each FII location
-
+## CALCULATE THE MARGINAL INCOME TAX REVENUE OF FII
 # all families
-twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "BOSTON"] <- twelvemos.hh$kl.change * bos.income.tax
-twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh$kl.change * sf.income.tax
-twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "OAKLAND"] <- twelvemos.hh$kl.change * oak.income.tax
-twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "FRESNO"] <- twelvemos.hh$kl.change * fresno.income.tax
-twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "DETROIT"] <- twelvemos.hh$kl.change * det.income.tax
-twelvemos.hh$inctaxrev[twelvemos.hh$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh$kl.change * no.income.tax
+if (twelvemos.hh$ServiceLocation == "BOSTON"){
+  twelvemos.hh$inctaxrev <- twelvemos.hh$kl.change * bos.income.tax
+  } else if (twelvemos.hh$ServiceLocation == "SANFRANCISCO") {
+  twelvemos.hh$inctaxrev <- twelvemos.hh$kl.change * sf.income.tax
+  } else if (twelvemos.hh$ServiceLocation == "OAKLAND") {
+    twelvemos.hh$inctaxrev <- twelvemos.hh$kl.change * oak.income.tax
+  } else if (twelvemos.hh$ServiceLocation == "FRESNO") {
+    twelvemos.hh$inctaxrev <- twelvemos.hh$kl.change * fresno.income.tax
+  } else if (twelvemos.hh$ServiceLocation == "DETROIT") {
+    twelvemos.hh$inctaxrev <- twelvemos.hh$kl.change * det.income.tax
+  } else {
+    twelvemos.hh$inctaxrev <- twelvemos.hh$kl.change * no.income.tax
+  }
 
 # core families
-twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "BOSTON"] <- twelvemos.hh.core$kl.change * bos.income.tax
-twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh.core$kl.change * sf.income.tax
-twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "OAKLAND"] <- twelvemos.hh.core$kl.change * oak.income.tax
-twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "FRESNO"] <- twelvemos.hh.core$kl.change * fresno.income.tax
-twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "DETROIT"] <- twelvemos.hh.core$kl.change * det.income.tax
-twelvemos.hh.core$inctaxrev[twelvemos.hh.core$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh.core$kl.change * no.income.tax
+if (twelvemos.hh.core$ServiceLocation == "BOSTON"){
+  twelvemos.hh.core$inctaxrev <- twelvemos.hh.core$kl.change * bos.income.tax
+} else if (twelvemos.hh.core$ServiceLocation == "SANFRANCISCO") {
+  twelvemos.hh.core$inctaxrev <- twelvemos.hh.core$kl.change * sf.income.tax
+} else if (twelvemos.hh.core$ServiceLocation == "OAKLAND") {
+  twelvemos.hh.core$inctaxrev <- twelvemos.hh.core$kl.change * oak.income.tax
+} else if (twelvemos.hh.core$ServiceLocation == "FRESNO") {
+  twelvemos.hh.core$inctaxrev <- twelvemos.hh.core$kl.change * fresno.income.tax
+} else if (twelvemos.hh.core$ServiceLocation == "DETROIT") {
+  twelvemos.hh.core$inctaxrev <- twelvemos.hh.core$kl.change * det.income.tax
+} else {
+  twelvemos.hh.core$inctaxrev <- twelvemos.hh.core$kl.change * no.income.tax
+}
 
-## CALCULATE THE MARGINAL SALES TAX BENEFITS OF FII
-# delta(income)*MPC*(TAX_sales)
-
+## CALCULATE THE MARGINAL SALES TAX REVENUE OF FII
 # all families
-twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "BOSTON"] <- twelvemos.hh$TotalInc.change * bos.sales.tax
-twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh$TotalInc.change * sf.sales.tax
-twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "OATotalIncAND"] <- twelvemos.hh$TotalInc.change * oak.sales.tax
-twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "FRESNO"] <- twelvemos.hh$TotalInc.change * fresno.sales.tax
-twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "DETROIT"] <- twelvemos.hh$TotalInc.change * det.sales.tax
-twelvemos.hh$salestaxrev[twelvemos.hh$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh$TotalInc.change * no.sales.tax
+if (twelvemos.hh$ServiceLocation == "BOSTON"){
+  twelvemos.hh$salestaxrev <- twelvemos.hh$TotalInc.change * bos.sales.tax * mpc
+} else if (twelvemos.hh$ServiceLocation == "SANFRANCISCO") {
+  twelvemos.hh$salestaxrev <- twelvemos.hh$TotalInc.change * sf.sales.tax * mpc
+} else if (twelvemos.hh$ServiceLocation == "OAKLAND") {
+  twelvemos.hh$salestaxrev <- twelvemos.hh$TotalInc.change * oak.sales.tax * mpc
+} else if (twelvemos.hh$ServiceLocation == "FRESNO") {
+  twelvemos.hh$salestaxrev <- twelvemos.hh$TotalInc.change * fresno.sales.tax * mpc
+} else if (twelvemos.hh$ServiceLocation == "DETROIT") {
+  twelvemos.hh$salestaxrev <- twelvemos.hh$TotalInc.change * det.sales.tax * mpc
+} else {
+  twelvemos.hh$salestaxrev <- twelvemos.hh$TotalInc.change * no.sales.tax * mpc
+}
 
 # core families
-twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "BOSTON"] <- twelvemos.hh.core$TotalInc.change * bos.sales.tax
-twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "SANFRANCISCO"] <- twelvemos.hh.core$TotalInc.change * sf.sales.tax
-twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "OATotalIncAND"] <- twelvemos.hh.core$TotalInc.change * oak.sales.tax
-twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "FRESNO"] <- twelvemos.hh.core$TotalInc.change * fresno.sales.tax
-twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "DETROIT"] <- twelvemos.hh.core$TotalInc.change * det.sales.tax
-twelvemos.hh.core$salestaxrev[twelvemos.hh.core$ServiceLocation == "NEWORLEANS"] <- twelvemos.hh.core$TotalInc.change * no.sales.tax
+if (twelvemos.hh.core$ServiceLocation == "BOSTON"){
+  twelvemos.hh.core$salestaxrev <- twelvemos.hh.core$TotalInc.change * bos.sales.tax * mpc
+} else if (twelvemos.hh.core$ServiceLocation == "SANFRANCISCO") {
+  twelvemos.hh.core$salestaxrev <- twelvemos.hh.core$TotalInc.change * sf.sales.tax * mpc
+} else if (twelvemos.hh.core$ServiceLocation == "OAKLAND") {
+  twelvemos.hh.core$salestaxrev <- twelvemos.hh.core$TotalInc.change * oak.sales.tax * mpc
+} else if (twelvemos.hh.core$ServiceLocation == "FRESNO") {
+  twelvemos.hh.core$salestaxrev <- twelvemos.hh.core$TotalInc.change * fresno.sales.tax * mpc
+} else if (twelvemos.hh.core$ServiceLocation == "DETROIT") {
+  twelvemos.hh.core$salestaxrev <- twelvemos.hh.core$TotalInc.change * det.sales.tax * mpc
+} else {
+  twelvemos.hh.core$salestaxrev <- twelvemos.hh.core$TotalInc.change * no.sales.tax * mpc
+}
 
 ## TOTAL MONTHLY MARGINAL BENEFITS TO ENROLLMENT
 twelvemos.hh$tot.pub.benefits <- twelvemos.hh$inctaxrev + twelvemos.hh$salestaxrev - twelvemos.hh$welfare.change
 twelvemos.hh.core$tot.pub.benefits <- twelvemos.hh.core$inctaxrev + twelvemos.hh.core$salestaxrev - twelvemos.hh.core$welfare.change
 
-## 12-MONTH DIFFERENCES SUBSET (only keep the year-over-year change)
-twelvemos.hh.small <- subset(twelvemos.hh, reportingmos == 13) 
-twelvemos.hh.core.small <- subset(twelvemos.hh.core, reportingmos == 13) 
+## SUMMED OVER 12 MONTHS
+lapply(twelvemos.hh[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x))
+
+sum.by.family <- ddply(twelvemos.hh, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
+                       welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
+
+# same analysis, now for fii core
+lapply(twelvemos.hh.core[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x))
+
+sum.by.core.family <- ddply(twelvemos.hh.core, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
+                            welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
+
+## YEAR-OVER-YEAR DIFFERENCES SUBSET (only keep the year-over-year change and then annualize it)
+## N.B. USE THE AVERAGE VALUE FOR ALL CATEGORIES AFTER REPORTING MONTH 13 TO ACCOUNT FOR VERY LONG-DATED JOURNAL ENTRIES
+twelvemos.hh.small <- subset(twelvemos.hh, reportingmos >= 13) 
+twelvemos.hh.core.small <- subset(twelvemos.hh.core, reportingmos >= 13) 
+
+lapply(twelvemos.hh.small[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+lapply(twelvemos.hh.core.small[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+
+
+ddply(twelvemos.hh.core.small, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
+      welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
 
 #############################################################################
 ##                   RETURN ON INVESTMENT CALCULATION                      ##
