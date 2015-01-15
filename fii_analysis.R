@@ -1838,22 +1838,23 @@ lapply(social.welfare.core, function(x) mean(x)*12)
 ##                          PEER EFFECTS                                  ##
 ############################################################################
 
-# Effects of your group members' income changes on  yours
-
-
+# Relationship between other group members' income changes on another's income changes
 peerinfo <- unique(twelvemos.hh.after[,c("FamilyID.HH", "GroupCode")])
 peer.data <- merge(social.welfare, peerinfo, by=c("FamilyID.HH"))
-
 peer.data <- peer.data[order(peer.data$GroupCode), ]
 
 write.csv(peer.data, file = "group_changes.csv")
-
 peer.data.changes <- read.csv("group_changes_revised.csv") 
 
 # plot a scatterplot; on x, your income change; on y, your group members' average income change
-plot(peer.data.changes$klgain.avg, peer.data.changes$kl.gp)
-cor(peer.data.changes$klgain.avg, peer.data.changes$kl.gp)
+pdf("peer_plot.pdf")
+plot(peer.data.changes$klgain.avg, peer.data.changes$kl.gp, main = "Average Family and Group Capital and\nLabor Income Changes",
+    xlab = "FII Family Income Change", ylab = "FII Family's Group's Average Income Change")  +
+abline(lm(peer.data.changes$kl.gp ~ peer.data.changes$klgain.avg))
+dev.off()
 
+
+cor(peer.data.changes$klgain.avg, peer.data.changes$kl.gp, use = "na.or.complete") # weak, positive correlation
 
 ## STOP LOGGING WORK
 sink()
