@@ -1686,7 +1686,7 @@ first.table.income <- cbind(totalincome, welfare, kl, numobs)
 # output results
 write.csv(first.table.income, file = "table_of_12mochanges.csv")
 
-## DIFFERENCES FROM BASELINE OVER THE COURSE OF A YEAR
+## DIFFERENCES FROM BASELINE
 # all families
 twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.inc.HH - KL.inc.HH[1])
 twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
@@ -1698,7 +1698,7 @@ twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, TotalIn
 twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1])
 
 ##########################################################################
-##      MARGINAL PROPENSITY TO CONSUME AND PUBLIC BENEFITS OF FII       ##
+##                  SOCIAL WELFARE BENEFITS OF FII                      ##
 ##########################################################################
 
 ## ASSUMPTIONS & INPUTS
@@ -1784,29 +1784,44 @@ if (twelvemos.hh.core$ServiceLocation == "BOSTON"){
 twelvemos.hh$tot.pub.benefits <- twelvemos.hh$inctaxrev + twelvemos.hh$salestaxrev - twelvemos.hh$welfare.change
 twelvemos.hh.core$tot.pub.benefits <- twelvemos.hh.core$inctaxrev + twelvemos.hh.core$salestaxrev - twelvemos.hh.core$welfare.change
 
-## SUMMED OVER 12 MONTHS
+## SUMMED OVER EACH OF 12 MONTHS
 lapply(twelvemos.hh[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x))
 
 sum.by.family <- ddply(twelvemos.hh, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
                        welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
 
-# same analysis, now for fii core
+# same analysis -  for fii core
 lapply(twelvemos.hh.core[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x))
 
 sum.by.core.family <- ddply(twelvemos.hh.core, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
                             welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
 
-## YEAR-OVER-YEAR DIFFERENCES SUBSET (only keep the year-over-year change and then annualize it)
+## YEAR-OVER-YEAR DIFFERENCES (only keep the year-over-year change and then annualize it)
 ## N.B. USE THE AVERAGE VALUE FOR ALL CATEGORIES AFTER REPORTING MONTH 13 TO ACCOUNT FOR VERY LONG-DATED JOURNAL ENTRIES
-twelvemos.hh.small <- subset(twelvemos.hh, reportingmos >= 13) 
-twelvemos.hh.core.small <- subset(twelvemos.hh.core, reportingmos >= 13) 
+twelvemos.hh.after <- subset(twelvemos.hh, reportingmos >= 13) 
+twelvemos.hh.core.after <- subset(twelvemos.hh.core, reportingmos >= 13) 
 
-lapply(twelvemos.hh.small[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
-lapply(twelvemos.hh.core.small[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+lapply(twelvemos.hh.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+lapply(twelvemos.hh.core.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+
+# get the average change after 12 months or longer of FII participation across each var
+social.welfare <- ddply(twelvemos.hh.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
+                             welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits))
+social.welfare <- as.data.frame(social.welfare)
+# sum those differences across social welfare category and annualize change
+lapply(social.welfare, function(x) sum(x)*12)
+
+# core families
+social.welfare.core <- ddply(twelvemos.hh.core.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
+                              welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits))
+social.welfare.core <- as.data.frame(social.welfare.core)
+
+# sum those differences across social welfare category and annualize change
+lapply(social.welfare.core, function(x) sum(x)*12)
 
 
-ddply(twelvemos.hh.core.small, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
-      welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
+
+
 
 #############################################################################
 ##                   RETURN ON INVESTMENT CALCULATION                      ##
