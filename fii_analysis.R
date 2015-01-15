@@ -332,6 +332,8 @@ sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 156 & sorted.merged$Journal
 sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 107 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
 sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 102 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
 
+sorted.merged <- sorted.merged[!(sorted.merged$FamilyId == 12),] # drop this observation - weird income situation (goes from 15k to 0)
+
 # set up a dummy count variable
 sorted.merged$Count <- 1
 
@@ -1034,39 +1036,39 @@ welfare.inc.nine <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baselin
        title = "Household Welfare Income at Baseline and Nine Months After FII Enrollment")  +
   theme(legend.title=element_blank())
 
-##########################
-## TWELVE MONTH CHANGES ##
-##########################
+#############################
+## >= TWELVE MONTH CHANGES ##
+#############################
 # Total Income
 tot.inc.twelve <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=twelvemos.hh.one) +
-  geom_density(aes(x=TotalInc.HH, color = "12 months"), data=twelvemos.hh.after) +
+  geom_density(aes(x=TotalInc.HH, color = "12 months or more"), data=twelvemos.hh.after) +
   geom_vline(aes(xintercept = TotalInc.twelve.one.mean, colour="Baseline")) + 
-  geom_vline(aes(xintercept = TotalInc.twelve.after.mean, colour="12 months")) + 
+  geom_vline(aes(xintercept = TotalInc.twelve.after.mean, colour="12 months or more")) + 
   labs(x = "Monthly Total Income", 
        y = "Density",
-       title = "Household Total Income at Baseline and Twelve Months After FII Enrollment")  +
+       title = "Household Total Income at Baseline and Twelve Months or More\nAfter FII Enrollment")  +
   theme(legend.title=element_blank())
 print(tot.inc.twelve)
 ggsave(file= "TotInc_12mo.pdf", tot.inc.twelve)
 
 # K & L Income
 kl.inc.twelve <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
-  geom_density(aes(x=KL.inc.HH, color= "12 months"), data=twelvemos.hh.after) +
+  geom_density(aes(x=KL.inc.HH, color= "12 months or more"), data=twelvemos.hh.after) +
   geom_vline(aes(xintercept = KL.inc.twelve.one.mean, colour="Baseline")) + 
-  geom_vline(aes(xintercept = KL.inc.twelve.after.mean, colour="12 months")) + 
+  geom_vline(aes(xintercept = KL.inc.twelve.after.mean, colour="12 months or more")) + 
   labs(x = "Monthly Capital and Labor Income", 
        y = "Density",
-       title = "Household Capital and Labor Income at Baseline and Twelve Months After FII Enrollment")  +
+       title = "Household Capital and Labor Income at Baseline and Twelve Months or More\nAfter FII Enrollment")  +
   theme(legend.title=element_blank())
 
 # Welfare Income
 welfare.inc.twelve <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
-  geom_density(aes(x=welfare.inc.HH, color="12 months"), data=twelvemos.hh.after) + 
+  geom_density(aes(x=welfare.inc.HH, color="12 months or more"), data=twelvemos.hh.after) + 
   geom_vline(aes(xintercept = Welfare.inc.twelve.one.mean, color="Baseline")) + 
-  geom_vline(aes(xintercept = Welfare.inc.twelve.after.mean, color="12 months")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.after.mean, color="12 months or more")) + 
   labs(x = "Monthly Welfare Income", 
        y = "Density",
-       title = "Household Welfare Income at Baseline and Twelve Months After FII Enrollment")  +
+       title = "Household Welfare Income at Baseline and Twelve Months or More After FII Enrollment")  +
   theme(legend.title=element_blank())
 print(welfare.inc.twelve)
 ggsave(file= "Welfare_12mo.pdf", welfare.inc.twelve)
@@ -1137,39 +1139,39 @@ welfare.inc.nine.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Ba
        title = "Household Welfare Income at Baseline and Nine Months After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
 
-#####################################
-## TWELVE MONTH CHANGES - FII Core ##
-#####################################
+#######################################
+## > TWELVE MONTH CHANGES - FII Core ##
+#######################################
 # Total Income
 tot.inc.twelve.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
-  geom_density(aes(x=TotalInc.HH, color = "12 months"), data=twelvemos.hh.core.after) +
+  geom_density(aes(x=TotalInc.HH, color = "12 months or more"), data=twelvemos.hh.core.after) +
   geom_vline(aes(xintercept = TotalInc.twelve.core.one.mean, colour="Baseline")) + 
-  geom_vline(aes(xintercept = TotalInc.twelve.core.after.mean, colour="12 months")) + 
+  geom_vline(aes(xintercept = TotalInc.twelve.core.after.mean, colour="12 months or more")) + 
   labs(x = "Monthly Total Income", 
        y = "Density",
-       title = "Household Total Income at Baseline and Twelve Months\n After FII Enrollment for FII Core")  +
+       title = "Household Total Income at Baseline and Twelve Months or More\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
 print(tot.inc.twelve.core)
 ggsave(file= "TotalInc_12mo_Core.pdf", tot.inc.twelve.core)
 
 # K & L Income
 kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
-  geom_density(aes(x=KL.inc.HH, color= "12 months"), data=twelvemos.hh.core.after) +
+  geom_density(aes(x=KL.inc.HH, color= "12 months or more"), data=twelvemos.hh.core.after) +
   geom_vline(aes(xintercept = KL.inc.twelve.core.one.mean, colour="Baseline")) + 
-  geom_vline(aes(xintercept = KL.inc.twelve.core.after.mean, colour="12 months")) + 
+  geom_vline(aes(xintercept = KL.inc.twelve.core.after.mean, colour="12 months or more")) + 
   labs(x = "Monthly Capital and Labor Income", 
        y = "Density",
-       title = "Household Capital and Labor Income at Baseline and Twelve Months\n After FII Enrollment for FII Core")  +
+       title = "Household Capital and Labor Income at Baseline and Twelve Months or More\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
 
 # Welfare Income
 welfare.inc.twelve.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
-  geom_density(aes(x=welfare.inc.HH, color="12 months"), data=twelvemos.hh.core.after) + 
+  geom_density(aes(x=welfare.inc.HH, color="12 months or more"), data=twelvemos.hh.core.after) + 
   geom_vline(aes(xintercept = Welfare.inc.twelve.core.one.mean, color="Baseline")) + 
-  geom_vline(aes(xintercept = Welfare.inc.twelve.core.after.mean, color="12 months")) + 
+  geom_vline(aes(xintercept = Welfare.inc.twelve.core.after.mean, color="12 months or more")) + 
   labs(x = "Monthly Welfare Income", 
        y = "Density",
-       title = "Household Welfare Income at Baseline and Twelve Months\n After FII Enrollment for FII Core")  +
+       title = "Household Welfare Income at Baseline and Twelve Months or More\n After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
 print(welfare.inc.twelve.core)
 ggsave(file= "Welfare_12mo_Core.pdf", welfare.inc.twelve.core)
@@ -1791,7 +1793,7 @@ sum.by.family <- ddply(twelvemos.hh, .(FamilyID.HH), summarize, salestaxrev.sum 
                        welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
 
 # same analysis -  for fii core
-lapply(twelvemos.hh.core[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x))
+lapply(twelvemos.hh.core[c("salestaxrev", "inctaxrev", "welfare.change", "tot.pub.benefits")], function(x) sum(x))
 
 sum.by.core.family <- ddply(twelvemos.hh.core, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
                             welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
@@ -1806,18 +1808,18 @@ lapply(twelvemos.hh.core.after[c("salestaxrev", "inctaxrev","welfare.change", "t
 
 # get the average change after 12 months or longer of FII participation across each var
 social.welfare <- ddply(twelvemos.hh.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
-                             welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits))
+                             welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits), klgain.avg = mean(kl.change), incgain.avg=mean(TotalInc.change))
 social.welfare <- as.data.frame(social.welfare)
-# sum those differences across social welfare category and annualize change
-lapply(social.welfare, function(x) sum(x)*12)
+# take mean of families' annual (or longer) changes in welfare and annualize them
+lapply(social.welfare, function(x) mean(x)*12)
 
 # core families
 social.welfare.core <- ddply(twelvemos.hh.core.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
-                              welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits))
+                              welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits), klgain.avg = mean(kl.change), incgain.avg=mean(TotalInc.change))
 social.welfare.core <- as.data.frame(social.welfare.core)
 
-# sum those differences across social welfare category and annualize change
-lapply(social.welfare.core, function(x) sum(x)*12)
+# take mean of families' annual (or longer) changes in welfare and annualize them
+lapply(social.welfare.core, function(x) mean(x)*12)
 
 
 
@@ -1827,7 +1829,30 @@ lapply(social.welfare.core, function(x) sum(x)*12)
 ##                   RETURN ON INVESTMENT CALCULATION                      ##
 #############################################################################
 
+# Cost estimates for a  year are ......
 
+
+
+
+############################################################################
+##                          PEER EFFECTS                                  ##
+############################################################################
+
+# Effects of your group members' income changes on  yours
+
+
+peerinfo <- unique(twelvemos.hh.after[,c("FamilyID.HH", "GroupCode")])
+peer.data <- merge(social.welfare, peerinfo, by=c("FamilyID.HH"))
+
+peer.data <- peer.data[order(peer.data$GroupCode), ]
+
+write.csv(peer.data, file = "group_changes.csv")
+
+peer.data.changes <- read.csv("group_changes_revised.csv") 
+
+# plot a scatterplot; on x, your income change; on y, your group members' average income change
+plot(peer.data.changes$klgain.avg, peer.data.changes$kl.gp)
+cor(peer.data.changes$klgain.avg, peer.data.changes$kl.gp)
 
 
 ## STOP LOGGING WORK
