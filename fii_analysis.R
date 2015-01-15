@@ -499,9 +499,9 @@ my.data <- merge(my.data, tenure.familymemberid, by = c("FamilyMemberId","Family
 my.data.sub <- subset(my.data, !(maxdate == "2014-08-01"| maxdate == "2014-09-01"))
 
 # subset dataset for FII Core members
-my.data.core.sub <- subset(my.data.sub, my.data$FamilyType=="FII Core")
+my.data.core.sub <- subset(my.data.sub, my.data.sub$FamilyType=="FII Core")
 
-# Subset for FII Core members additionally - COMMENTED OUT B/C OLD/MISLEADING (12/19/2014)
+# subset for FII Core members additionally - COMMENTED OUT B/C OLD/MISLEADING (12/19/2014)
 # my.data.fiicore <- subset(my.data, my.data$JournalMoYr<="2014-09-01" & my.data$FamilyType=="FII Core") 
 
 # table of counts by period
@@ -522,7 +522,7 @@ attrition2.core$Periods <- as.numeric(attrition2.core$Periods)
 
 attrition.w.core <- merge(attrition2, attrition2.core,  by = c('Periods'), all = TRUE)
 
-# plot the attrition rate for all members and FII Core )
+# plot the attrition rate for all members and FII Core
 attrition.plot <- ggplot(data = attrition.w.core, aes(x=Periods, na.rm = TRUE)) + 
                          geom_line(aes(y = attrition.rate, colour = "attrition.rate"))           + 
                          geom_line(aes(y = attrition.rate.core, colour = "attrition.rate.core")) +
@@ -1803,13 +1803,18 @@ sum.by.core.family <- ddply(twelvemos.hh.core, .(FamilyID.HH), summarize, salest
 twelvemos.hh.after <- subset(twelvemos.hh, reportingmos >= 13) 
 twelvemos.hh.core.after <- subset(twelvemos.hh.core, reportingmos >= 13) 
 
-lapply(twelvemos.hh.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
-lapply(twelvemos.hh.core.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+# lapply(twelvemos.hh.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
+# lapply(twelvemos.hh.core.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
 
 # get the average change after 12 months or longer of FII participation across each var
 social.welfare <- ddply(twelvemos.hh.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
                              welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits), klgain.avg = mean(kl.change), incgain.avg=mean(TotalInc.change))
 social.welfare <- as.data.frame(social.welfare)
+
+#######################################################################
+## KEY RESULT FOR CORE FAMILIES WHO HAVE BEEN IN FII FOR > 12 MONTHS ##
+#######################################################################
+
 # take mean of families' annual (or longer) changes in welfare and annualize them
 lapply(social.welfare, function(x) mean(x)*12)
 
@@ -1818,10 +1823,12 @@ social.welfare.core <- ddply(twelvemos.hh.core.after, .(FamilyID.HH), summarize,
                               welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits), klgain.avg = mean(kl.change), incgain.avg=mean(TotalInc.change))
 social.welfare.core <- as.data.frame(social.welfare.core)
 
+#######################################################################
+## KEY RESULT FOR ALL FAMILIES WHO HAVE BEEN IN FII FOR > 12 MONTHS  ##
+#######################################################################
+
 # take mean of families' annual (or longer) changes in welfare and annualize them
 lapply(social.welfare.core, function(x) mean(x)*12)
-
-
 
 
 
@@ -1853,7 +1860,7 @@ plot(peer.data.changes$klgain.avg, peer.data.changes$kl.gp, main = "Average Fami
 abline(lm(peer.data.changes$kl.gp ~ peer.data.changes$klgain.avg))
 dev.off()
 
-
+# correlation of avg. y-o-y group and family K&L income changes
 cor(peer.data.changes$klgain.avg, peer.data.changes$kl.gp, use = "na.or.complete") # weak, positive correlation
 
 ## STOP LOGGING WORK
