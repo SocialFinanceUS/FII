@@ -462,7 +462,7 @@ print(g6)
 ggsave(g6, file= "Dist_Response_Rates.pdf")
 
 ######################################################
-############# ATTRITION ANALYSIS #####################
+##               ATTRITION ANALYSIS                 ##
 ######################################################
 
 # Want to examine (1) attrition; (2) selective reporting
