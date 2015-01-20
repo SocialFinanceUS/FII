@@ -307,33 +307,6 @@ library(zoo)
 sorted.merged$JournalMoYr <- as.yearmon(sorted.merged$JournalDate) # month & year of JournalDate is  now variable
 sorted.merged$JournalMoYr <- as.Date(sorted.merged$JournalMoYr, format="%b %Y")
 
-## ADDITIONAL FIXES THAT WERE SPOTTED LATER AND NEED CLEANED FOR HOUSEHOLDS
-## (most of these relate to very long durations in FII that seemed wrong; trying to err on conservative side, though)
-## changes made 01/06/2015
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 325 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 312 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 310 & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 308 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 282 & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2013-06-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 274 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 270 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264 & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 264 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 254 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 238 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 236 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 227 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 214 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 201 & sorted.merged$JournalMoYr == "2013-01-01" )]  <- "2014-01-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 194 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 190 & sorted.merged$JournalMoYr == "2011-08-01" )]  <- "2013-08-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 179 & sorted.merged$JournalMoYr == "2011-06-01" )]  <- "2014-06-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 156 & sorted.merged$JournalMoYr == "2011-09-01" )]  <- "2013-09-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 107 & sorted.merged$JournalMoYr == "2012-10-01" )]  <- "2013-10-01"
-sorted.merged$JournalMoYr[(sorted.merged$FamilyId == 102 & sorted.merged$JournalMoYr == "2012-09-01" )]  <- "2013-09-01"
-
-sorted.merged <- sorted.merged[!(sorted.merged$FamilyId == 12),] # drop this observation - weird income situation (goes from 15k to 0)
-
 # set up a dummy count variable
 sorted.merged$Count <- 1
 
