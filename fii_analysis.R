@@ -159,12 +159,12 @@ unique.flagged<-flagged[ ! duplicated( flagged[c("FamilyMemberId","FamilyId")]),
 ##############################################################################################################
 
 # second, l's investigate fixes for flagged observations
-sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==96 & sorted.merged$FamilyMemberId == 45),]    # drop this observation, appears to be a duplicate of 96 & 43
-sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==287 & sorted.merged$FamilyMemberId == 564),]  # drop this observation, appears to create a new entry for pre-existing FII member
-sorted.merged$age2[(sorted.merged$Birthday== "1899-01-31")] <- NA                                    # some birth years are 1899, which must be wrong
+sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==96 & sorted.merged$FamilyMemberId == 45),] # drop this observation, appears to be a duplicate of 96 & 43
+sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==287 & sorted.merged$FamilyMemberId == 564),] # drop this observation, appears to create a new entry for pre-existing FII member
+sorted.merged$age2[(sorted.merged$Birthday== "1899-01-31")] <- NA # some birth years are 1899, which must be wrong
 sorted.merged <- sorted.merged[!(sorted.merged$FamilyId==438 & sorted.merged$FamilyMemberId == 1224),] # drop this observation
-sorted.merged$age2[(sorted.merged$FamilyId==590 & sorted.merged$FamilyMemberId==3161)] <- NA         # age seems to reference the wrong person 
-                                                                                                     # (right person isn't in database)
+sorted.merged$age2[(sorted.merged$FamilyId==590 & sorted.merged$FamilyMemberId==3161)] <- NA # age seems to reference the wrong person 
+                                                                                             # (right person isn't in database)
 
 # we can safely employ the following rule to fix incorrect ages:
 sorted.merged$age2[sorted.merged$age2<=10 & (sorted.merged$PrimaryActivity=="Work"                 |  
@@ -234,20 +234,20 @@ unique.cities <- sorted.merged[ ! duplicated( sorted.merged[c("City")]),]
 # View(unique.cities$City)
 # View(unique.cities$City[order(unique.cities$City)])
 
-sorted.merged$City[substr(sorted.merged$City,1,3)=="DOR"]    <-"DORCHESTER"
-sorted.merged$City[grepl("CHESTER",sorted.merged$City)]      <-"DORCHESTER"
-sorted.merged$City[substr(sorted.merged$City,1,3)=="DET"]    <-"DETROIT"
-sorted.merged$City[grepl("OIT",sorted.merged$City)]          <-"DETROIT"
-sorted.merged$City[substr(sorted.merged$City,1,7)=="SANFRAN"]<-"SANFRANCISCO"
-sorted.merged$City[substr(sorted.merged$City,1,3)=="MAT"]    <-"MATTAPAN"
-sorted.merged$City[substr(sorted.merged$City,1,3)=="JAM"]    <-"JAMAICAPLAIN"
-sorted.merged$City[substr(sorted.merged$City,1,4)=="EAST"]   <-"EASTBOSTON"
-sorted.merged$City[substr(sorted.merged$City,1,2)=="E."]     <-"EASTBOSTON"
-sorted.merged$City[substr(sorted.merged$City,1,2)=="E,"]     <-"EASTBOSTON"
-sorted.merged$City[grepl("SEA",sorted.merged$City)]          <-"CHELSEA"
-sorted.merged$City[grepl("BURY",sorted.merged$City)]         <-"ROXBURY"
-sorted.merged$City[grepl("S.BOSTON",sorted.merged$City)]     <-"SOUTHBOSTON"
-sorted.merged$City[grepl("SOBRANTE",sorted.merged$City)]     <-"ELSOBRANTE"
+sorted.merged$City[substr(sorted.merged$City,1,3)=="DOR"]    <- "DORCHESTER"
+sorted.merged$City[grepl("CHESTER",sorted.merged$City)]      <- "DORCHESTER"
+sorted.merged$City[substr(sorted.merged$City,1,3)=="DET"]    <- "DETROIT"
+sorted.merged$City[grepl("OIT",sorted.merged$City)]          <- "DETROIT"
+sorted.merged$City[substr(sorted.merged$City,1,7)=="SANFRAN"]<- "SANFRANCISCO"
+sorted.merged$City[substr(sorted.merged$City,1,3)=="MAT"]    <- "MATTAPAN"
+sorted.merged$City[substr(sorted.merged$City,1,3)=="JAM"]    <- "JAMAICAPLAIN"
+sorted.merged$City[substr(sorted.merged$City,1,4)=="EAST"]   <- "EASTBOSTON"
+sorted.merged$City[substr(sorted.merged$City,1,2)=="E."]     <- "EASTBOSTON"
+sorted.merged$City[substr(sorted.merged$City,1,2)=="E,"]     <- "EASTBOSTON"
+sorted.merged$City[grepl("SEA",sorted.merged$City)]          <- "CHELSEA"
+sorted.merged$City[grepl("BURY",sorted.merged$City)]         <- "ROXBURY"
+sorted.merged$City[grepl("S.BOSTON",sorted.merged$City)]     <- "SOUTHBOSTON"
+sorted.merged$City[grepl("SOBRANTE",sorted.merged$City)]     <- "ELSOBRANTE"
 
 # for service locations
 sorted.merged$ServiceLocation <- as.character(sorted.merged$ServiceLocation) # convert to character
@@ -265,8 +265,8 @@ sorted.merged$FamilyType[ ! duplicated( sorted.merged[c("FamilyType")])]
 
 sorted.merged$FamilyType<-as.character(sorted.merged$FamilyType) # convert to character
 
-sorted.merged$FamilyType[sorted.merged$FamilyType=="" &  substr(sorted.merged$FamilyCode,3,3)=="R"]                                <-"FII Ripple"
-sorted.merged$FamilyType[sorted.merged$FamilyType=="" & (substr(sorted.merged$FamilyCode,3,3)!="R" & sorted.merged$FamilyCode!="")]<-"FII Core"
+sorted.merged$FamilyType[sorted.merged$FamilyType=="" &  substr(sorted.merged$FamilyCode,3,3) == "R"] <- "FII Ripple"
+sorted.merged$FamilyType[sorted.merged$FamilyType=="" & (substr(sorted.merged$FamilyCode,3,3) != "R" & sorted.merged$FamilyCode!="")]<- "FII Core"
 
 # for education
 table(sorted.merged$EducationLevel)
@@ -284,13 +284,13 @@ sorted.merged$PrimaryActivity<-as.character(sorted.merged$PrimaryActivity) # con
 sorted.merged$PrimaryActivity<-gsub(" ", "", sorted.merged$PrimaryActivity)# eliminate spaces
 sorted.merged$PrimaryActivity<-toupper(sorted.merged$PrimaryActivity)      # capitalize 
 
-sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & sorted.merged$age2<5 & !(is.na(sorted.merged$age2))]<-"NONE"
+sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & sorted.merged$age2<5 & !(is.na(sorted.merged$age2))] <- "NONE"
 sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & grepl("ELEMENTARY", sorted.merged$SchoolName) 
-                                                                & !(sorted.merged$age2>13)]                           <-"ELEMENTARYSCHOOL(1-6)"
+                                                                & !(sorted.merged$age2>13)]                            <- "ELEMENTARYSCHOOL(1-6)"
 sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & grepl("HIGH", sorted.merged$SchoolName) 
-                                                                & !(sorted.merged$age2<12)]                           <-"HIGHSCHOOL(10-12)"
+                                                                & !(sorted.merged$age2<12)]                            <- "HIGHSCHOOL(10-12)"
 sorted.merged$EducationLevel[sorted.merged$EducationLevel == "" & sorted.merged$PrimaryActivity=="DAYCARE" 
-                                                                & !(sorted.merged$age2>6)]                            <-"NONE"
+                                                                & !(sorted.merged$age2>6)]                             <- "NONE"
 
 # disagreements b/w binary and continuous variables
 sorted.merged$HousingSubsized[sorted.merged$HousingSubsidizedAmount>0] <- "Yes"
@@ -358,8 +358,8 @@ ggsave(file="Monthly_Families_Reporting.pdf")
 
 # calculate entries for each individual and show what family they belong to
 familymember.count <- aggregate(sorted.merged$FamilyMemberId, by=list(FamilyId=sorted.merged$FamilyId, 
-                                                                     FamilyMemberId=sorted.merged$FamilyMemberId),
-                                                             function(x) length((x)))
+                                                                      FamilyMemberId=sorted.merged$FamilyMemberId),
+                                                                      function(x) length((x)))
 
 # make a function that calculates the number of months in which one could potentially have submitted
 # a journal entry, using first and last journal dates
@@ -372,22 +372,22 @@ elapsed_months <- function(end_date, start_date) {
 # apply this function to each FamilyMemberId to get number of months in FII database
 library(plyr)
 tenure.familymemberid <- ddply(sorted.merged, .(FamilyMemberId), summarize, 
-                                                               mindate  = min(JournalMoYr), 
-                                                               maxdate  = max(JournalMoYr), 
-                                                               diffdate = elapsed_months(maxdate,mindate))
+                                                                 mindate  = min(JournalMoYr), 
+                                                                 maxdate  = max(JournalMoYr), 
+                                                                 diffdate = elapsed_months(maxdate,mindate))
 
 # check order of tenure (max should be 25 - 24 months of FII enrollment, anything above that is weird)
 # tenure.familymemberid[order(tenure.familymemberid$diffdate), ]
 
 # distribution of respondents by length of time in data system
 g3 <- ggplot(data=tenure.familymemberid) +
-           geom_histogram(aes(x = diffdate, y = ..count../sum(..count..)),binwidth = 1, fill = "white", color = "black") +
-           scale_y_continuous(labels = percent_format()) +
-           labs(x = "Length of Time Reporting (in Months)", 
-                y = "Proportion of Respondents",
-                title = "Distribution of Respondent Tenure in FII Reporting System")
+      geom_histogram(aes(x = diffdate, y = ..count../sum(..count..)),binwidth = 1, fill = "white", color = "black") +
+      scale_y_continuous(labels = percent_format()) +
+      labs(x = "Length of Time Reporting (in Months)", 
+           y = "Proportion of Respondents",
+           title = "Distribution of Respondent Tenure in FII Reporting System")
 print(g3)
-ggsave(g3, file= "Dist_Respondent_Tenure.pdf")
+ggsave(g3, file = "Dist_Respondent_Tenure.pdf")
 
 # some oddities: there are a few individuals whose entry in system is > 25 months
 # not clear how we resolve this problem (if it is a problem)
@@ -440,7 +440,7 @@ ggsave(g6, file= "Dist_Response_Rates.pdf")
 
 # Want to examine (1) attrition; (2) selective reporting
 
-# FIRST, subset the data so that we're only looking at those who have >1 entry
+# FIRST, subset the data so that we're only looking at those who have > 1 entry
 # we'll want to use data where there are > 1 observations for family-level analysis
 # for individuals, to get things like total income it's important not to delete those entries
 
@@ -449,14 +449,14 @@ analytic.data <- merge(sorted.merged, familymember.count, by.x="FamilyMemberId",
 analytic.data <- rename(analytic.data, c("x"="ReportingMos"))
 
 # subset data for those w/ >1 observation
-analytic.sub  <- subset(analytic.data, analytic.data$ReportingMos>1) 
+analytic.sub <- subset(analytic.data, analytic.data$ReportingMos > 1) 
 
 # create a PERIODS variable, which will equate to the cumulative sum
 # of the number of times a person has reported so that we can commonly 
 # plot and analyze the progress a family makes through FII
 
 cum.count <- ddply(analytic.sub, .(FamilyMemberId), summarize, 
-                    Periods  = cumsum(Count))
+                   Periods  = cumsum(Count))
  
 cum.count2 <- cbind(cum.count, analytic.sub$JournalMoYr)
 colnames(cum.count2) <- c('FamilyMemberId','Periods','JournalMoYr')
@@ -500,7 +500,7 @@ attrition.plot <- ggplot(data = attrition.w.core, aes(x=Periods, na.rm = TRUE)) 
                          geom_line(aes(y = attrition.rate, colour = "attrition.rate"))           + 
                          geom_line(aes(y = attrition.rate.core, colour = "attrition.rate.core")) +
                          labs(x = "Number of Monthly Journals Completed", 
-                             y = "Attrition",
+                              y = "Attrition",
                               title = "Attrition by Reporting Period") +
                               ylim(0,0.8) + 
                               xlim(0,15)  +
@@ -620,7 +620,6 @@ my.data$EmploymentIncome[my.data$CalWorksIncome == my.data$EmploymentIncome] <- 
 my.data$TransitionalMAIncome[my.data$FamilyMemberId == 879 & my.data$TransitionalMAIncome.outlier==1] <- 
                              my.data$TransitionalMAIncome[my.data$FamilyMemberId == 879 & my.data$TransitionalMAIncome.outlier==1] / 100
 
-
 # fix RentalIncomeAmount outliers that appear to be errant
 # View(my.data[my.data$RentalIncomeAmount.outlier==1,])
 
@@ -641,7 +640,6 @@ my.data$EmploymentIncome[my.data$OtherLumpIncome == my.data$EmploymentIncome] <-
 my.data$HousingRentAmount[my.data$FamilyMemberId == 1156 & my.data$HousingRentAmount.outlier==1] <- 
                           my.data$HousingRentAmount[my.data$FamilyMemberId == 1156 & my.data$HousingRentAmount.outlier==1] / 100
 
-
 # fix MortgageAmount outliers that appear to be errant
 # View(my.data[my.data$MortgageAmount.outlier==1,])
 # HouseholdJournalIds 260, 7708, 191, 731, 2152, 1595, 172, 325 - have very large mortgage amounts
@@ -659,7 +657,6 @@ my.data$MortgageAmount[my.data$FamilyMemberId %in% c(158,379,381) & my.data$Mort
 my.data$ChildSupportIncome[my.data$ChildSupportIncome > 10000 & my.data$ChildSupportIncome.outlier==1] <- 
   my.data$ChildSupportIncome[my.data$ChildSupportIncome > 10000 & my.data$ChildSupportIncome.outlier==1] / 10
 
-
 ## What variables are captured at the HH level and which are at the individual level?
 ## Important implications for how we think about calculating HH aggregates
 ## HH-level: ChildSupportIncome, EITC, FoodStampIncome, WICIncome, RentalIncomeAmount, OtherLumpIncome, HousingSubsidizedAmount, HousingRentAmount, OwnHome, MortgageAmount, InvestmentCircle
@@ -668,8 +665,8 @@ my.data$ChildSupportIncome[my.data$ChildSupportIncome > 10000 & my.data$ChildSup
 ## LET'S CREATE HH-LEVEL AGGREGATE VARS FOR INDIVIDUAL-LEVEL VARIABLES
 hh.vars <- aggregate(my.data[c("EmploymentIncome","OtherWorkIncome","BusinessIncome","SSIIncome",
                            "UnemploymentIncome","CalWorksIncome","TransitionalMAIncome")],                           
-                 by = list(Date = my.data$JournalMoYr, FamilyID = my.data$FamilyId.x), 
-                 function(x) sum(x))
+                     by = list(Date = my.data$JournalMoYr, FamilyID = my.data$FamilyId.x), 
+                     function(x) sum(x))
 
 ## HERE, I'M COPYING THE HH-LEVEL VARIABLES SO THAT WE CAN WORK W THESE 
 ## VARS IN A SEPARATE DATAFRAME, CORDONING ALL HH-LEVEL ANALYSIS TO ONE DATAFRAME
@@ -708,9 +705,8 @@ my.hh.data$welfare.inc.HH <- my.hh.data$EITC.HH + my.hh.data$FoodStampIncome.HH 
                              my.hh.data$CalWorksIncome.HH + my.hh.data$TransitionalMAIncome.HH + my.hh.data$UnemploymentIncome.HH 
 
 # monthly welfare income ex-EITC
-my.hh.data$welfare.exEITC.inc.HH <- my.hh.data$FoodStampIncome.HH + my.hh.data$WICIncome.HH + 
-                                    my.hh.data$HousingSubsidizedAmount.HH + my.hh.data$SSIIncome.HH +
-                                    my.hh.data$CalWorksIncome.HH + my.hh.data$TransitionalMAIncome.HH + 
+my.hh.data$welfare.exEITC.inc.HH <- my.hh.data$FoodStampIncome.HH + my.hh.data$WICIncome.HH + my.hh.data$HousingSubsidizedAmount.HH + 
+                                    my.hh.data$SSIIncome.HH + my.hh.data$CalWorksIncome.HH + my.hh.data$TransitionalMAIncome.HH + 
                                     my.hh.data$UnemploymentIncome.HH
 
 # monthly capital (K) & labor (L) income
@@ -741,8 +737,8 @@ dist.welfare <- ggplot(data = my.hh.data) +
   geom_histogram(aes(x = welfare.inc.HH, y = ..count../sum(..count..)), binwidth = 250, fill = "white", color = "black") +
   scale_y_continuous(labels = percent_format()) +
   scale_x_continuous(breaks = seq(0,12000,by=1000),
-                      labels = c(0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000),
-                      limits = c(0,12000),expand=c(0,0)) +
+                     labels = c(0, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000),
+                     limits = c(0,12000),expand=c(0,0)) +
   #theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) + 
   labs(x = "Monthly Household Government Assistance Payments and Subsidies", 
        y = "Proportion of Monthly Household Observations",
@@ -796,12 +792,12 @@ sixmos.hh <- subset(my.hh.data, maxmos >= 7)
 ninemos.hh <- subset(my.hh.data, maxmos >= 10)
 twelvemos.hh <- subset(my.hh.data, maxmos >= 13)
 
-sixmos.hh.one <- subset(sixmos.hh, reportingmos == 1)
-ninemos.hh.one <- subset(ninemos.hh, reportingmos == 1)
-twelvemos.hh.one <- subset(twelvemos.hh, reportingmos == 1)
+sixmos.hh.one <- subset(sixmos.hh, reportingmos <= 3)
+ninemos.hh.one <- subset(ninemos.hh, reportingmos <= 3)
+twelvemos.hh.one <- subset(twelvemos.hh, reportingmos <= 3)
 
-sixmos.hh.after <- subset(sixmos.hh, reportingmos == 7)
-ninemos.hh.after <- subset(ninemos.hh, reportingmos == 10)
+sixmos.hh.after <- subset(sixmos.hh, (reportingmos == 7 | reportingmos == 8 | reportingmos == 9))
+ninemos.hh.after <- subset(ninemos.hh, (reportingmos == 10 | reportingmos == 11 | reportingmos == 12))
 twelvemos.hh.after <- subset(twelvemos.hh, reportingmos >= 13) # this is different to account for those who are beyond one year figure
 
 # mean and median income figures - 6 months
@@ -872,12 +868,12 @@ sixmos.hh.core <- subset(sixmos.hh, FamilyType == "FII Core")
 ninemos.hh.core <- subset(ninemos.hh, FamilyType == "FII Core")
 twelvemos.hh.core <- subset(twelvemos.hh, FamilyType == "FII Core")
 
-sixmos.hh.core.one <- subset(sixmos.hh.core, reportingmos == 1)
-ninemos.hh.core.one <- subset(ninemos.hh.core, reportingmos == 1)
-twelvemos.hh.core.one <- subset(twelvemos.hh.core, reportingmos == 1)
+sixmos.hh.core.one <- subset(sixmos.hh.core, reportingmos <= 3)
+ninemos.hh.core.one <- subset(ninemos.hh.core, reportingmos <= 3)
+twelvemos.hh.core.one <- subset(twelvemos.hh.core, reportingmos <= 3)
 
-sixmos.hh.core.after <- subset(sixmos.hh.core, reportingmos == 7)
-ninemos.hh.core.after <- subset(ninemos.hh.core, reportingmos == 10)
+sixmos.hh.core.after <- subset(sixmos.hh.core, (reportingmos == 7 | reportingmos == 8 | reportingmos == 9))
+ninemos.hh.core.after <- subset(ninemos.hh.core, (reportingmos == 10 | reportingmos == 11 | reportingmos == 12))
 twelvemos.hh.core.after <- subset(twelvemos.hh.core, reportingmos >= 13)
 
 # mean and median income figures - 6 months | FII Core
@@ -1041,7 +1037,7 @@ welfare.inc.twelve <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Basel
   geom_vline(aes(xintercept = Welfare.inc.twelve.after.mean, color="12 months or more")) + 
   labs(x = "Monthly Welfare Income", 
        y = "Density",
-       title = "Household Welfare Income at Baseline and Twelve Months or More After FII Enrollment")  +
+       title = "Household Welfare Income at Baseline and Twelve Months or More\nAfter FII Enrollment")  +
   theme(legend.title=element_blank())
 print(welfare.inc.twelve)
 ggsave(file= "Welfare_12mo.pdf", welfare.inc.twelve)
@@ -1159,12 +1155,12 @@ sixpds.hh <- subset(my.hh.data, maxpds >= 7)
 ninepds.hh <- subset(my.hh.data, maxpds >= 10)
 twelvepds.hh <- subset(my.hh.data, maxpds >= 13)
 
-sixpds.hh.one <- subset(sixpds.hh, Periods == 1)
-ninepds.hh.one <- subset(ninepds.hh, Periods == 1)
-twelvepds.hh.one <- subset(twelvepds.hh, Periods == 1)
+sixpds.hh.one <- subset(sixpds.hh, Periods <= 3)
+ninepds.hh.one <- subset(ninepds.hh, Periods <= 3)
+twelvepds.hh.one <- subset(twelvepds.hh, Periods <= 3)
 
-sixpds.hh.after <- subset(sixpds.hh, Periods == 7)
-ninepds.hh.after <- subset(ninepds.hh, Periods == 10)
+sixpds.hh.after <- subset(sixpds.hh, (Periods == 7 | Periods == 8 | Periods == 9))
+ninepds.hh.after <- subset(ninepds.hh, (Periods == 10 | Periods == 11 | Periods == 12))
 twelvepds.hh.after <- subset(twelvepds.hh, Periods >= 13) # this is different to account for those who exceed 12 reporting periods
 
 # mean and median income figures - 6 reports
@@ -1235,12 +1231,12 @@ sixpds.hh.core <- subset(sixpds.hh, FamilyType == "FII Core")
 ninepds.hh.core <- subset(ninepds.hh, FamilyType == "FII Core")
 twelvepds.hh.core <- subset(twelvepds.hh, FamilyType == "FII Core")
 
-sixpds.hh.core.one <- subset(sixpds.hh.core, Periods == 1)
-ninepds.hh.core.one <- subset(ninepds.hh.core, Periods == 1)
-twelvepds.hh.core.one <- subset(twelvepds.hh.core, Periods == 1)
+sixpds.hh.core.one <- subset(sixpds.hh.core, Periods <= 3)
+ninepds.hh.core.one <- subset(ninepds.hh.core, Periods <= 3)
+twelvepds.hh.core.one <- subset(twelvepds.hh.core, Periods <= 3)
 
-sixpds.hh.core.after <- subset(sixpds.hh.core, Periods == 7)
-ninepds.hh.core.after <- subset(ninepds.hh.core, Periods == 10)
+sixpds.hh.core.after <- subset(sixpds.hh.core, (Periods == 7 | Periods == 8 | Periods == 9))
+ninepds.hh.core.after <- subset(ninepds.hh.core, (Periods == 10 | Periods == 11 | Periods == 12))
 twelvepds.hh.core.after <- subset(twelvepds.hh.core, Periods >= 13)
 
 # mean and median income figures - 6 periods | FII Core
@@ -1663,14 +1659,14 @@ write.csv(first.table.income, file = "table_of_12mochanges.csv")
 
 ## DIFFERENCES FROM BASELINE
 # all families
-twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.inc.HH - KL.inc.HH[1])
-twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
-twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1]) 
+twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[1], KL.inc.HH[2], KL.inc.HH[3])),
+                                                               TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[1], TotalInc.HH[2], TotalInc.HH[3])),
+                                                               welfare.change = welfare.inc.HH - mean(c(welfare.inc.HH[1], welfare.inc.HH[2], welfare.inc.HH[3])))
 
 # core families
-twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.change = KL.inc.HH - KL.inc.HH[1])
-twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, TotalInc.change = TotalInc.HH - TotalInc.HH[1])
-twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, welfare.change = welfare.inc.HH - welfare.inc.HH[1])
+twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[1], KL.inc.HH[2], KL.inc.HH[3])),
+                                                                         TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[1], TotalInc.HH[2], TotalInc.HH[3])),
+                                                                         welfare.change = welfare.inc.HH - mean(c(welfare.inc.HH[1], welfare.inc.HH[2], welfare.inc.HH[3])))
 
 ##########################################################################
 ##                  SOCIAL WELFARE BENEFITS OF FII                      ##
