@@ -376,12 +376,12 @@ tenure.familymemberid <- ddply(sorted.merged, .(FamilyMemberId), summarize,
                                                                  maxdate  = max(JournalMoYr), 
                                                                  diffdate = elapsed_months(maxdate,mindate))
 
-# check order of tenure (max should be 25 - 24 months of FII enrollment, anything above that is weird)
+# check order of tenure (max should be 25 - 24 months of FII enrollment - but some have very long tenures because of legacy system change)
 # tenure.familymemberid[order(tenure.familymemberid$diffdate), ]
 
 # distribution of respondents by length of time in data system
 g3 <- ggplot(data=tenure.familymemberid) +
-      geom_histogram(aes(x = diffdate, y = ..count../sum(..count..)),binwidth = 1, fill = "white", color = "black") +
+      geom_histogram(aes(x = diffdate, y = ..count../sum(..count..)), binwidth = 1, fill = "white", color = "black") +
       scale_y_continuous(labels = percent_format()) +
       labs(x = "Length of Time Reporting (in Months)", 
            y = "Proportion of Respondents",
@@ -411,7 +411,7 @@ print(g4)
 
 # distribution of respondents by reporting frequency
 g5 <- ggplot(data = entries.by.individual) +
-      geom_histogram(aes(x = x, y = ..count../sum(..count..)),binwidth = 1, fill = "white", color = "black") +
+      geom_histogram(aes(x = x, y = ..count../sum(..count..)), binwidth = 1, fill = "white", color = "black") +
       scale_y_continuous(labels = percent_format()) +
       labs(x = "Number of Monthly Journal Entries", 
            y = "Proportion of Respondents",
@@ -425,7 +425,7 @@ hit.rate$responserate<-round(hit.rate$x/hit.rate$diffdate, digits = 2)
 
 # distribution of response rates
 g6<-ggplot(data = hit.rate) +
-  geom_histogram(aes(x = responserate, y = ..count../sum(..count..)),binwidth = 0.1000001, fill = "white", color = "black") +
+  geom_histogram(aes(x = responserate, y = ..count../sum(..count..)), binwidth = 0.1000001, fill = "white", color = "black") +
   scale_y_continuous(labels = percent_format()) +
   labs(x = "Response Rates", 
        y = "Proportion of Respondents",
@@ -1657,16 +1657,18 @@ first.table.income <- cbind(totalincome, welfare, kl, numobs)
 # output results
 write.csv(first.table.income, file = "table_of_12mochanges.csv")
 
-## DIFFERENCES FROM BASELINE
+## DIFFERENCES FROM BASELINE - DEFINED AS AVERAGE OF FIRST THREE MONTHS
 # all families
-twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[1], KL.inc.HH[2], KL.inc.HH[3])),
-                                                               TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[1], TotalInc.HH[2], TotalInc.HH[3])),
-                                                               welfare.change = welfare.inc.HH - mean(c(welfare.inc.HH[1], welfare.inc.HH[2], welfare.inc.HH[3])))
+twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[reportingmos==1], KL.inc.HH[reportingmos==2], KL.inc.HH[reportingmos==3])),
+                                                               TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[reportingmos==1], TotalInc.HH[reportingmos==2], TotalInc.HH[reportingmos==3])),
+                                                               welfare.change = welfare.inc.HH -  mean(c(welfare.inc.HH[reportingmos==1], welfare.inc.HH[reportingmos==2], welfare.inc.HH[reportingmos==3])))
 
 # core families
-twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[1], KL.inc.HH[2], KL.inc.HH[3])),
-                                                                         TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[1], TotalInc.HH[2], TotalInc.HH[3])),
-                                                                         welfare.change = welfare.inc.HH - mean(c(welfare.inc.HH[1], welfare.inc.HH[2], welfare.inc.HH[3])))
+twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[reportingmos==1], KL.inc.HH[reportingmos==2], KL.inc.HH[reportingmos==3])),
+                                                                         TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[reportingmos==1], TotalInc.HH[reportingmos==2], TotalInc.HH[reportingmos==3])),
+                                                                         welfare.change = welfare.inc.HH -  mean(c(welfare.inc.HH[reportingmos==1], welfare.inc.HH[reportingmos==2], welfare.inc.HH[reportingmos==3])))
+
+
 
 ##########################################################################
 ##                  SOCIAL WELFARE BENEFITS OF FII                      ##
@@ -1755,7 +1757,7 @@ if (twelvemos.hh.core$ServiceLocation == "BOSTON"){
 twelvemos.hh$tot.pub.benefits <- twelvemos.hh$inctaxrev + twelvemos.hh$salestaxrev - twelvemos.hh$welfare.change
 twelvemos.hh.core$tot.pub.benefits <- twelvemos.hh.core$inctaxrev + twelvemos.hh.core$salestaxrev - twelvemos.hh.core$welfare.change
 
-## SUMMED OVER EACH OF 12 MONTHS
+## SUMMED OVER EACH OF 12 (or MORE) MONTHS
 lapply(twelvemos.hh[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x))
 
 sum.by.family <- ddply(twelvemos.hh, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
@@ -1767,13 +1769,9 @@ lapply(twelvemos.hh.core[c("salestaxrev", "inctaxrev", "welfare.change", "tot.pu
 sum.by.core.family <- ddply(twelvemos.hh.core, .(FamilyID.HH), summarize, salestaxrev.sum = sum(salestaxrev), inctaxrev.sum = sum(inctaxrev), 
                             welfare.sum = sum(welfare.change), tot.pub.benefits.sum = sum(tot.pub.benefits))
 
-## YEAR-OVER-YEAR DIFFERENCES (only keep the year-over-year change and then annualize it)
-## N.B. USE THE AVERAGE VALUE FOR ALL CATEGORIES AFTER REPORTING MONTH 13 TO ACCOUNT FOR VERY LONG-DATED JOURNAL ENTRIES
+## EXAMINING THE AVERAGE 12-MONTH PLUS PERFORMANCE FOR FII FAMILIES VS. AVERAGE OF FIRST THREE MONTHS
 twelvemos.hh.after <- subset(twelvemos.hh, reportingmos >= 13) 
 twelvemos.hh.core.after <- subset(twelvemos.hh.core, reportingmos >= 13) 
-
-# lapply(twelvemos.hh.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
-# lapply(twelvemos.hh.core.after[c("salestaxrev", "inctaxrev","welfare.change", "tot.pub.benefits")], function(x) sum(x)*12)
 
 # get the average change after 12 months or longer of FII participation across each var
 social.welfare <- ddply(twelvemos.hh.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
@@ -1799,23 +1797,18 @@ social.welfare.core <- as.data.frame(social.welfare.core)
 # take mean of families' annual (or longer) changes in welfare and annualize them
 lapply(social.welfare.core, function(x) mean(x)*12)
 
-
-
 #############################################################################
 ##                   RETURN ON INVESTMENT CALCULATION                      ##
 #############################################################################
 
 # Cost estimates for a  year are ......
 
-
-
-
 ############################################################################
 ##                          PEER EFFECTS                                  ##
 ############################################################################
 
 # Relationship between other group members' income changes on another's income changes
-peerinfo <- unique(twelvemos.hh.after[,c("FamilyID.HH", "GroupCode")])
+peerinfo <- unique(twelvemos.hh.after[,c("FamilyID.HH", "GroupCode")]) #should probably use 
 peer.data <- merge(social.welfare, peerinfo, by=c("FamilyID.HH"))
 peer.data <- peer.data[order(peer.data$GroupCode), ]
 
@@ -1824,9 +1817,9 @@ peer.data.changes <- read.csv("group_changes_revised.csv")
 
 # plot a scatterplot; on x, your income change; on y, your group members' average income change
 pdf("peer_plot.pdf")
-plot(peer.data.changes$klgain.avg, peer.data.changes$kl.gp, main = "Average Family and Group Capital and\nLabor Income Changes",
+plot(peer.data.changes$klgain.avg, peer.data.changes$Group.Incgain, main = "Family and Group Average\nIncome Change from Baseline",
     xlab = "FII Family Income Change", ylab = "FII Family's Group's Average Income Change")  +
-abline(lm(peer.data.changes$kl.gp ~ peer.data.changes$klgain.avg))
+abline(lm(peer.data.changes$Group.Incgain ~ peer.data.changes$klgain.avg))
 dev.off()
 
 # correlation of avg. y-o-y group and family K&L income changes
