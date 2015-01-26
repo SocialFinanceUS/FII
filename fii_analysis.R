@@ -939,9 +939,32 @@ Welfare.exEITC.inc.twelve.core.after.mean <- mean(twelvemos.hh.core.after$welfar
 Welfare.exEITC.inc.twelve.core.one.med <- median(twelvemos.hh.core.one$welfare.exEITC.inc.HH)
 Welfare.exEITC.inc.twelve.core.after.med <- median(twelvemos.hh.core.after$welfare.exEITC.inc.HH)
 
-#######################
-## SIX MONTH CHANGES ##
-#######################
+## BASELINE (AVG. OF 1ST 3 MONTHS) BY FAMILY
+baseline <- ddply(twelvemos.hh.one, .(FamilyID.HH), summarize, base.welfare = mean(welfare.inc.HH), base.kl.inc = mean(KL.inc.HH),
+                  base.TotalInc = mean(TotalInc.HH))
+
+baseline.core <- ddply(twelvemos.hh.core.one, .(FamilyID.HH), summarize, base.welfare = mean(welfare.inc.HH), base.kl.inc = mean(KL.inc.HH),
+                       base.TotalInc = mean(TotalInc.HH))
+
+## AFTER (AVG. OF > 12 MONTHS) BY FAMILY
+after <- ddply(twelvemos.hh.after, .(FamilyID.HH), summarize, after.welfare = mean(welfare.inc.HH), after.kl.inc = mean(KL.inc.HH),
+               after.TotalInc = mean(TotalInc.HH))
+
+after.core <- ddply(twelvemos.hh.core.after, .(FamilyID.HH), summarize, after.welfare = mean(welfare.inc.HH), after.kl.inc = mean(KL.inc.HH),
+                    after.TotalInc = mean(TotalInc.HH))
+
+# merge baseline and after datasets
+before.and.after <- merge(baseline, after, by=c("FamilyID.HH"))
+before.and.after.core <- merge(baseline.core, after.core, by=c("FamilyID.HH"))
+
+# test for significance - paired t-test
+t.test(before.and.after$base.welfare, before.and.after$after.welfare, paired=TRUE)
+
+
+#### GRAPHICAL ANALYSIS OF DISTRIBUTIONS
+########################
+## SIX MONTH CHANGES  ##
+########################
 # Total Income
 tot.inc.six <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=sixmos.hh.one) +
   geom_density(aes(x=TotalInc.HH, color = "6 months"), data=sixmos.hh.after) +
@@ -1807,13 +1830,15 @@ lapply(social.welfare.core, function(x) mean(x)*12)
 ##                          PEER EFFECTS                                  ##
 ############################################################################
 
-# Relationship between other group members' income changes on another's income changes
-peerinfo <- unique(twelvemos.hh.after[,c("FamilyID.HH", "GroupCode")]) #should probably use 
-peer.data <- merge(social.welfare, peerinfo, by=c("FamilyID.HH"))
-peer.data <- peer.data[order(peer.data$GroupCode), ]
+# merge the temp.cols matrix with social.welfare so that we have info on GroupCode and ServiceLocation
+social.welfare <- merge(social.welfare, temp.cols, by.x=c("FamilyID.HH"), by.y=c("FamilyId.x"))
 
+# order data by GroupCode
+peer.data <- social.welfare[order(social.welfare$GroupCode), ]
+
+# output to .csv file
 write.csv(peer.data, file = "group_changes.csv")
-peer.data.changes <- read.csv("group_changes_revised.csv") 
+peer.data.changes <- read.csv("group_changes_revised.csv") # calculated group changes in spreadsheet
 
 # plot a scatterplot; on x, your income change; on y, your group members' average income change
 pdf("peer_plot.pdf")
@@ -1823,7 +1848,7 @@ abline(lm(peer.data.changes$Group.Incgain ~ peer.data.changes$klgain.avg))
 dev.off()
 
 # correlation of avg. y-o-y group and family K&L income changes
-cor(peer.data.changes$klgain.avg, peer.data.changes$kl.gp, use = "na.or.complete") # weak, positive correlation
+cor(peer.data.changes$klgain.avg, peer.data.changes$Group.Incgain, use = "na.or.complete") # weak, positive correlation
 
 ## STOP LOGGING WORK
 sink()
