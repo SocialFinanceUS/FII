@@ -376,9 +376,6 @@ tenure.familymemberid <- ddply(sorted.merged, .(FamilyMemberId), summarize,
                                                                  maxdate  = max(JournalMoYr), 
                                                                  diffdate = elapsed_months(maxdate,mindate))
 
-# check order of tenure (max should be 25 - 24 months of FII enrollment - but some have very long tenures because of legacy system change)
-# tenure.familymemberid[order(tenure.familymemberid$diffdate), ]
-
 # distribution of respondents by length of time in data system
 g3 <- ggplot(data=tenure.familymemberid) +
       geom_histogram(aes(x = diffdate, y = ..count../sum(..count..)), binwidth = 1, fill = "white", color = "black") +
@@ -388,9 +385,6 @@ g3 <- ggplot(data=tenure.familymemberid) +
            title = "Distribution of Respondent Tenure in FII Reporting System")
 print(g3)
 ggsave(g3, file = "Dist_Respondent_Tenure.pdf")
-
-# some oddities: there are a few individuals whose entry in system is > 25 months
-# not clear how we resolve this problem (if it is a problem)
 
 # number of monthly entries for each individual
 entries.by.individual <- aggregate(sorted.merged$FamilyMemberId, 
@@ -474,9 +468,6 @@ my.data.sub <- subset(my.data, !(maxdate == "2014-08-01"| maxdate == "2014-09-01
 # subset dataset for FII Core members
 my.data.core.sub <- subset(my.data.sub, my.data.sub$FamilyType=="FII Core")
 
-# subset for FII Core members additionally - COMMENTED OUT B/C OLD/MISLEADING (12/19/2014)
-# my.data.fiicore <- subset(my.data, my.data$JournalMoYr<="2014-09-01" & my.data$FamilyType=="FII Core") 
-
 # table of counts by period
 attrition <- (as.data.frame(table(my.data.sub$Periods)))
 attrition.core <- (as.data.frame(table(my.data.core.sub$Periods)))
@@ -544,7 +535,6 @@ ggsave(firstdate.plot, file= "Dist_FirstResponse.pdf")
 ## RULE: WE WANT TO EVALUATE PROGRESS AT THE FAMILY LEVEL, WHICH MEANS WE NEED FAMILY INCOME VARIABLES TO AGGREGATE PERFORMANCE
 ## LET'S START BY AGGREGATING VERTICALLY (ACROSS PEOPLE), THEN AGGREGATE HORIZONTALLY (ACROSS CATEGORIES)
 ## IT MIGHT MAKE SENSE TO DIVIDE INCOME TO (1) EARNED & CAPITAL INCOME and (2) WELFARE INCOME & SUBSIDIES
-## CHECK PROGRESS OF FAMILIES OVER TIME, TOO.
 
 ## CHECK FOR OUTLIERS AMONG INCOME and EXPENSE VARIABLES:
 ##  "EmploymentIncome"        "OtherWorkIncome"         "EITC"
@@ -958,13 +948,20 @@ before.and.after <- merge(baseline, after, by=c("FamilyID.HH"))
 before.and.after.core <- merge(baseline.core, after.core, by=c("FamilyID.HH"))
 
 # test for significance - paired t-test
-t.test(before.and.after$base.welfare, before.and.after$after.welfare, paired=TRUE)
+wilcox.test(before.and.after$base.welfare, before.and.after$after.welfare, paired=TRUE) # significant increase
+wilcox.test(before.and.after$base.kl.inc, before.and.after$after.kl.inc, paired=TRUE) # insignificant
+wilcox.test(before.and.after$base.TotalInc, before.and.after$after.TotalInc, paired=TRUE) # significant increase
 
+wilcox.test(before.and.after.core$base.welfare, before.and.after.core$after.welfare, paired=TRUE) # insignificant 
+wilcox.test(before.and.after.core$base.kl.inc, before.and.after.core$after.kl.inc, paired=TRUE) # insignificant
+wilcox.test(before.and.after.core$base.TotalInc, before.and.after.core$after.TotalInc, paired=TRUE) # insignificant
 
 #### GRAPHICAL ANALYSIS OF DISTRIBUTIONS
-########################
-## SIX MONTH CHANGES  ##
-########################
+## N.B. The graphs for 12-month changes include all post-12 month income entries as independent entries
+## BUT, the REVISED  graphs use one observation for each family for baseline and after-12 months
+#######################
+## SIX MONTH CHANGES ##
+#######################
 # Total Income
 tot.inc.six <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), data=sixmos.hh.one) +
   geom_density(aes(x=TotalInc.HH, color = "6 months"), data=sixmos.hh.after) +
@@ -1043,6 +1040,18 @@ tot.inc.twelve <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baseline"), 
 print(tot.inc.twelve)
 ggsave(file= "TotInc_12mo.pdf", tot.inc.twelve)
 
+# Total Income - REVISED (USE THIS ONE)
+tot.inc.twelve.revised <- ggplot() + geom_density(aes(x=base.TotalInc, color="Baseline"), data=before.and.after) +
+  geom_density(aes(x=after.TotalInc, color = "12 months or more"), data=before.and.after) +
+  geom_vline(aes(xintercept = mean(before.and.after$base.TotalInc), colour="Baseline")) + 
+  geom_vline(aes(xintercept = mean(before.and.after$after.TotalInc), colour="12 months or more")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and\nTwelve Months or More After FII Enrollment")  +
+  theme(legend.title=element_blank())
+print(tot.inc.twelve.revised)
+ggsave(file= "TotInc_Revised_12mo.pdf", tot.inc.twelve.revised)
+
 # K & L Income
 kl.inc.twelve <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
   geom_density(aes(x=KL.inc.HH, color= "12 months or more"), data=twelvemos.hh.after) +
@@ -1051,6 +1060,16 @@ kl.inc.twelve <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), dat
   labs(x = "Monthly Capital and Labor Income", 
        y = "Density",
        title = "Household Capital and Labor Income at Baseline and Twelve Months or More\nAfter FII Enrollment")  +
+  theme(legend.title=element_blank())
+
+# K & L Income - REVISED (USE THIS ONE)
+kl.inc.twelve.revised <- ggplot() + geom_density(aes(x=base.kl.inc, color="Baseline"), data=before.and.after) +
+  geom_density(aes(x=after.kl.inc, color= "12 months or more"), data=before.and.after) +
+  geom_vline(aes(xintercept = mean(before.and.after$base.kl.inc), colour="Baseline")) + 
+  geom_vline(aes(xintercept = mean(before.and.after$after.kl.inc), colour="12 months or more")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and\nTwelve Months or More After FII Enrollment")  +
   theme(legend.title=element_blank())
 
 # Welfare Income
@@ -1064,6 +1083,18 @@ welfare.inc.twelve <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="Basel
   theme(legend.title=element_blank())
 print(welfare.inc.twelve)
 ggsave(file= "Welfare_12mo.pdf", welfare.inc.twelve)
+
+# Welfare Income - REVISED (USE THIS ONE)
+welfare.inc.twelve.revised <- ggplot() + geom_density(aes(x=base.welfare, color="Baseline"), data=before.and.after) +
+  geom_density(aes(x=after.welfare, color="12 months or more"), data=before.and.after) + 
+  geom_vline(aes(xintercept = mean(before.and.after$base.welfare), color="Baseline")) + 
+  geom_vline(aes(xintercept = mean(before.and.after$after.welfare), color="12 months or more")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and\nTwelve Months or More After FII Enrollment")  +
+  theme(legend.title=element_blank())
+print(welfare.inc.twelve.revised)
+ggsave(file= "Welfare_Revised_12mo.pdf", welfare.inc.twelve.revised)
 
 ##################################
 ## SIX MONTH CHANGES - FII CORE ##
@@ -1146,6 +1177,18 @@ tot.inc.twelve.core <- ggplot() + geom_density(aes(x=TotalInc.HH, color="Baselin
 print(tot.inc.twelve.core)
 ggsave(file= "TotalInc_12mo_Core.pdf", tot.inc.twelve.core)
 
+# Total Income - REVISED (USE THIS ONE)
+tot.inc.twelve.core.revised <- ggplot() + geom_density(aes(x=base.TotalInc, color="Baseline"), data=before.and.after.core) +
+  geom_density(aes(x=after.TotalInc, color = "12 months or more"), data=before.and.after.core) +
+  geom_vline(aes(xintercept = mean(before.and.after.core$base.TotalInc), colour="Baseline")) + 
+  geom_vline(aes(xintercept = mean(before.and.after.core$after.TotalInc), colour="12 months or more")) + 
+  labs(x = "Monthly Total Income", 
+       y = "Density",
+       title = "Household Total Income at Baseline and\nTwelve Months or More After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+print(tot.inc.twelve.core.revised)
+ggsave(file= "TotInc_Revised_12mo_Core.pdf", tot.inc.twelve.core.revised)
+
 # K & L Income
 kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
   geom_density(aes(x=KL.inc.HH, color= "12 months or more"), data=twelvemos.hh.core.after) +
@@ -1154,6 +1197,16 @@ kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline")
   labs(x = "Monthly Capital and Labor Income", 
        y = "Density",
        title = "Household Capital and Labor Income at Baseline and Twelve Months or More\n After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+
+# K & L Income - REVISED (USE THIS ONE)
+kl.inc.twelve.core.revised <- ggplot() + geom_density(aes(x=base.kl.inc, color="Baseline"), data=before.and.after.core) +
+  geom_density(aes(x=after.kl.inc, color= "12 months or more"), data=before.and.after.core) +
+  geom_vline(aes(xintercept = mean(before.and.after.core$base.kl.inc), colour="Baseline")) + 
+  geom_vline(aes(xintercept = mean(before.and.after.core$after.kl.inc), colour="12 months or more")) + 
+  labs(x = "Monthly Capital and Labor Income", 
+       y = "Density",
+       title = "Household Capital and Labor Income at Baseline and\nTwelve Months or More After FII Enrollment for FII Core")  +
   theme(legend.title=element_blank())
 
 # Welfare Income
@@ -1167,6 +1220,18 @@ welfare.inc.twelve.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, color="
   theme(legend.title=element_blank())
 print(welfare.inc.twelve.core)
 ggsave(file= "Welfare_12mo_Core.pdf", welfare.inc.twelve.core)
+
+# Welfare Income - REVISED (USE THIS ONE)
+welfare.inc.twelve.core.revised <- ggplot() + geom_density(aes(x=base.welfare, color="Baseline"), data=before.and.after.core) +
+  geom_density(aes(x=after.welfare, color="12 months or more"), data=before.and.after.core) + 
+  geom_vline(aes(xintercept = mean(before.and.after.core$base.welfare), color="Baseline")) + 
+  geom_vline(aes(xintercept = mean(before.and.after.core$after.welfare), color="12 months or more")) + 
+  labs(x = "Monthly Welfare Income", 
+       y = "Density",
+       title = "Household Welfare Income at Baseline and\nTwelve Months or More After FII Enrollment for FII Core")  +
+  theme(legend.title=element_blank())
+print(welfare.inc.twelve.core.revised)
+ggsave(file= "Welfare_Revised_12mo_Core.pdf", welfare.inc.twelve.core.revised)
 
 ###################################################################################
 ##            COMPARE DISTRIBUTIONS OF INCOME AT BASELINE AND                    ##
@@ -1249,7 +1314,7 @@ Welfare.exEITC.inc.twelvepds.after.mean <- mean(twelvepds.hh.after$welfare.exEIT
 Welfare.exEITC.inc.twelvepds.one.med <- median(twelvepds.hh.one$welfare.exEITC.inc.HH)
 Welfare.exEITC.inc.twelvepds.after.med <- median(twelvepds.hh.after$welfare.exEITC.inc.HH)
 
-# SUBSET FOR FAMILY TYPE
+# SUBSET FOR CORE FAMILIES
 sixpds.hh.core <- subset(sixpds.hh, FamilyType == "FII Core")
 ninepds.hh.core <- subset(ninepds.hh, FamilyType == "FII Core")
 twelvepds.hh.core <- subset(twelvepds.hh, FamilyType == "FII Core")
@@ -1531,154 +1596,6 @@ welfare.inc.twelvepds.core <- ggplot() + geom_density(aes(x=welfare.inc.HH, colo
 print(welfare.inc.twelvepds.core)
 ggsave(file= "Welfare_12pds_Core.pdf", welfare.inc.twelvepds.core)
 
-####################################################
-##      Summary of 12-Month Income Changes by     ##    
-##        Service Location and Family Type        ##
-####################################################
-## BOSTON
-# core
-BOS.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="BOSTON" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                  mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-BOS.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="BOSTON" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                    mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-BOS.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="BOSTON" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-               mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-BOS.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="BOSTON" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
-
-# overall
-BOS.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="BOSTON"]) - 
-             mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
-BOS.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="BOSTON"]) - 
-               mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
-BOS.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="BOSTON"]) - 
-          mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
-BOS.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="BOSTON"])
-
-## DETROIT
-# core
-DET.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="DETROIT" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                  mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-DET.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="DETROIT" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                    mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-DET.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="DETROIT" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-               mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-DET.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="DETROIT" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
-
-# overall
-DET.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="DETROIT"]) - 
-             mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
-DET.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="DETROIT"]) - 
-               mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
-DET.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="DETROIT"]) - 
-          mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
-DET.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="DETROIT"])
-
-## FRESNO
-# core
-FRESNO.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="FRESNO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                     mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-FRESNO.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="FRESNO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                       mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-FRESNO.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="FRESNO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                  mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-FRESNO.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="FRESNO" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
-
-# overall
-FRESNO.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="FRESNO"]) - 
-                mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
-FRESNO.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="FRESNO"]) - 
-                  mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
-FRESNO.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="FRESNO"]) - 
-             mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
-FRESNO.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="FRESNO"])
-
-## NEW ORLEANS
-# core
-NO.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                 mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-NO.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                   mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-NO.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-              mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-NO.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="NEWORLEANS" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
-
-# overall
-NO.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="NEWORLEANS"]) - 
-            mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
-NO.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="NEWORLEANS"]) - 
-              mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
-NO.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="NEWORLEANS"]) - 
-         mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
-NO.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="NEWORLEANS"])
-
-## OAKLAND
-# core
-OAK.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="OAKLAND" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                  mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-OAK.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="OAKLAND" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                    mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-OAK.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="OAKLAND" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-               mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-OAK.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="OAKLAND" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
-
-# overall
-OAK.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="OAKLAND"]) - 
-             mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
-OAK.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="OAKLAND"]) - 
-               mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
-OAK.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="OAKLAND"]) - 
-          mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
-OAK.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="OAKLAND"])
-
-## SAN FRANCISCO
-# core
-SF.total.core <- mean(twelvemos.hh.core.after$TotalInc.HH[twelvemos.hh.core.after$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                 mean(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-SF.welfare.core <- mean(twelvemos.hh.core.after$welfare.inc.HH[twelvemos.hh.core.after$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-                   mean(twelvemos.hh.core.one$welfare.inc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-SF.kl.core <- mean(twelvemos.hh.core.after$KL.inc.HH[twelvemos.hh.core.after$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.after$FamilyType=="FII Core"]) - 
-              mean(twelvemos.hh.core.one$KL.inc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])
-SF.core.number <- length(twelvemos.hh.core.one$TotalInc.HH[twelvemos.hh.core.one$ServiceLocation=="SANFRANCISCO" & twelvemos.hh.core.one$FamilyType=="FII Core"])  
-
-# overall
-SF.total <- mean(twelvemos.hh.after$TotalInc.HH[twelvemos.hh.after$ServiceLocation=="SANFRANCISCO"]) - 
-            mean(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
-SF.welfare <- mean(twelvemos.hh.after$welfare.inc.HH[twelvemos.hh.after$ServiceLocation=="SANFRANCISCO"]) - 
-              mean(twelvemos.hh.one$welfare.inc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
-SF.kl <- mean(twelvemos.hh.after$KL.inc.HH[twelvemos.hh.after$ServiceLocation=="SANFRANCISCO"]) - 
-         mean(twelvemos.hh.one$KL.inc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
-SF.number <- length(twelvemos.hh.one$TotalInc.HH[twelvemos.hh.one$ServiceLocation=="SANFRANCISCO"])
-
-## ALL LOCATIONS
-# core
-ALL.total.core <- TotalInc.twelve.core.after.mean - TotalInc.twelve.core.one.mean 
-ALL.welfare.core <- Welfare.inc.twelve.core.after.mean - Welfare.inc.twelve.core.one.mean
-ALL.kl.core <- KL.inc.twelve.core.after.mean - KL.inc.twelve.core.one.mean
-ALL.core.number <- length(twelvemos.hh.core.one$TotalInc.HH)
-
-# overall
-ALL.total <- TotalInc.twelve.after.mean - TotalInc.twelve.one.mean 
-ALL.welfare <- Welfare.inc.twelve.after.mean - Welfare.inc.twelve.one.mean 
-ALL.kl <- KL.inc.twelve.after.mean - KL.inc.twelve.one.mean
-ALL.number <- length(twelvemos.hh.one$TotalInc.HH)
-
-## COMBINE INTO TABLE
-totalincome <- rbind(BOS.total.core, BOS.total, DET.total.core, DET.total, FRESNO.total.core, 
-                     FRESNO.total, NO.total.core, NO.total, OAK.total.core, OAK.total, SF.total.core, SF.total, ALL.total.core, ALL.total)
-
-welfare <- rbind(BOS.welfare.core, BOS.welfare, DET.welfare.core, DET.welfare, FRESNO.welfare.core, 
-                 FRESNO.welfare, NO.welfare.core, NO.welfare, OAK.welfare.core, OAK.welfare, SF.welfare.core, SF.welfare, ALL.welfare.core, ALL.welfare)
-
-kl <- rbind(BOS.kl.core, BOS.kl, DET.kl.core, DET.kl, FRESNO.kl.core, 
-            FRESNO.kl, NO.kl.core, NO.kl, OAK.kl.core, OAK.kl, SF.kl.core, SF.kl, ALL.kl.core, ALL.kl)
-
-numobs <- rbind(BOS.core.number, BOS.number, DET.core.number, DET.number, FRESNO.core.number, 
-                FRESNO.number, NO.core.number, NO.number, OAK.core.number, OAK.number, SF.core.number, SF.number, ALL.core.number, ALL.number)
-
-first.table.income <- cbind(totalincome, welfare, kl, numobs)
-
-# output results
-write.csv(first.table.income, file = "table_of_12mochanges.csv")
 
 ## DIFFERENCES FROM BASELINE - DEFINED AS AVERAGE OF FIRST THREE MONTHS
 # all families
@@ -1687,11 +1604,7 @@ twelvemos.hh <- ddply(twelvemos.hh, .(FamilyID.HH), transform, kl.change = KL.in
                                                                welfare.change = welfare.inc.HH -  mean(c(welfare.inc.HH[reportingmos==1], welfare.inc.HH[reportingmos==2], welfare.inc.HH[reportingmos==3])))
 
 # core families
-twelvemos.hh.core <- ddply(twelvemos.hh.core, .(FamilyID.HH), transform, kl.change = KL.inc.HH - mean(c(KL.inc.HH[reportingmos==1], KL.inc.HH[reportingmos==2], KL.inc.HH[reportingmos==3])),
-                                                                         TotalInc.change = TotalInc.HH - mean(c(TotalInc.HH[reportingmos==1], TotalInc.HH[reportingmos==2], TotalInc.HH[reportingmos==3])),
-                                                                         welfare.change = welfare.inc.HH -  mean(c(welfare.inc.HH[reportingmos==1], welfare.inc.HH[reportingmos==2], welfare.inc.HH[reportingmos==3])))
-
-
+twelvemos.hh.core <- subset(twelvemos.hh, FamilyType == "FII Core")
 
 ##########################################################################
 ##                  SOCIAL WELFARE BENEFITS OF FII                      ##
@@ -1801,30 +1714,24 @@ social.welfare <- ddply(twelvemos.hh.after, .(FamilyID.HH), summarize, salestaxr
                              welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits), klgain.avg = mean(kl.change), incgain.avg=mean(TotalInc.change))
 social.welfare <- as.data.frame(social.welfare)
 
-#######################################################################
-## KEY RESULT FOR CORE FAMILIES WHO HAVE BEEN IN FII FOR > 12 MONTHS ##
-#######################################################################
+######################################################################
+## KEY RESULT FOR ALL FAMILIES WHO HAVE BEEN IN FII FOR > 12 MONTHS ##
+######################################################################
 
 # take mean of families' annual (or longer) changes in welfare and annualize them
 lapply(social.welfare, function(x) mean(x)*12)
+
+#######################################################################
+## KEY RESULT FOR CORE FAMILIES WHO HAVE BEEN IN FII FOR > 12 MONTHS ##
+#######################################################################
 
 # core families
 social.welfare.core <- ddply(twelvemos.hh.core.after, .(FamilyID.HH), summarize, salestaxrev.avg = mean(salestaxrev), inctaxrev.avg = mean(inctaxrev), 
                               welfare.avg = mean(welfare.change), tot.pub.benefits.avg= mean(tot.pub.benefits), klgain.avg = mean(kl.change), incgain.avg=mean(TotalInc.change))
 social.welfare.core <- as.data.frame(social.welfare.core)
 
-#######################################################################
-## KEY RESULT FOR ALL FAMILIES WHO HAVE BEEN IN FII FOR > 12 MONTHS  ##
-#######################################################################
-
 # take mean of families' annual (or longer) changes in welfare and annualize them
 lapply(social.welfare.core, function(x) mean(x)*12)
-
-#############################################################################
-##                   RETURN ON INVESTMENT CALCULATION                      ##
-#############################################################################
-
-# Cost estimates for a  year are ......
 
 ############################################################################
 ##                          PEER EFFECTS                                  ##
@@ -1850,5 +1757,15 @@ dev.off()
 # correlation of avg. y-o-y group and family K&L income changes
 cor(peer.data.changes$klgain.avg, peer.data.changes$Group.Incgain, use = "na.or.complete") # weak, positive correlation
 
-## STOP LOGGING WORK
+####################################################
+##      Summary of Pre-Post Income Changes by     ##    
+##        Service Location and Family Type        ##
+####################################################
+changes.by.type.loc <- ddply(social.welfare, .(FamilyType, ServiceLocation), summarize, change.welfare = mean(welfare.avg), change.kl = mean(klgain.avg),
+                             change.totinc = mean(incgain.avg), numobs = length(FamilyID.HH))
+
+# output results
+write.csv(changes.by.type.loc, file = "table_of_12mochanges.csv")
+
+# STOP LOGGING WORK
 sink()
