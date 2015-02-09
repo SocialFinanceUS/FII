@@ -407,11 +407,18 @@ print(g4)
 g5 <- ggplot(data = entries.by.individual) +
       geom_histogram(aes(x = x, y = ..count../sum(..count..)), binwidth = 1, fill = "white", color = "black") +
       scale_y_continuous(labels = percent_format()) +
-      labs(x = "Number of Monthly Journal Entries", 
-           y = "Proportion of Respondents",
-           title = "Distribution of Respondent Reporting Frequency")    
+  xlab("Number of Monthly Journal Entries") +  
+  ylab("Proportion of Respondents") + 
+  ggtitle("Respondent Reporting Frequency") + 
+  theme(plot.title = element_text(lineheight=3, color="black", size=25)) +
+  theme(legend.text=element_text(size=12)) +
+  #theme(legend.title=element_blank()) + 
+  #theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  theme(axis.text.x=element_text(size=12)) + 
+  theme(axis.title.y=element_text(size=12)) + 
+  theme(axis.title.x=element_text(size=14))
 print(g5)
-ggsave(g5, file= "Dist_Respondent_Frequency.pdf")
+ggsave(g5, file= "Dist_Respondent_Frequency.pdf", width=10, height=6)
 
 # what is the response rate? (i.e., out of the total months you are in FII, for what percentage have you submitted a journal entry)
 hit.rate<-merge(tenure.familymemberid, entries.by.individual, by.x = "FamilyMemberId", by.y = "FamilyMemberId")
@@ -521,11 +528,19 @@ firstdate.plot <- ggplot(data = tenure.familymemberid) +
                         scale_y_continuous(labels = percent_format()) +
                         #scale_x_date(labels = date_format("%B %Y")) +
                         #theme(axis.text.x = element_text(angle=45, hjust=1, vjust=1)) + 
-                        labs(x = "First Monthly Journal Entry", 
-                             y = "Proportion of Respondents",
-                             title = "Distribution of Respondents' First Journal Entry Date")    
+  geom_vline(data=tenure.familymemberid, aes(xintercept = as.numeric(mindate[12])), colour="red", linetype="dashed") +
+  xlab("First Monthly Journal Entry") +  
+  ylab("Proportion of Respondents") + 
+  ggtitle("Respondents' First Journal Entry Date") + 
+  theme(plot.title = element_text(lineheight=3, color="black", size=25)) +
+  theme(legend.text=element_text(size=12)) +
+ # theme(legend.title=element_blank()) + 
+#  theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  theme(axis.text.x=element_text(size=12)) + 
+  theme(axis.title.y=element_text(size=12)) + 
+  theme(axis.title.x=element_text(size=14))  
 print(firstdate.plot)
-ggsave(firstdate.plot, file= "Dist_FirstResponse.pdf")
+ggsave(firstdate.plot, file= "Dist_FirstResponse.pdf", height=6, width=10)
 
 
 ###################################################################################
@@ -946,8 +961,9 @@ after.core <- ddply(twelvemos.hh.core.after, .(FamilyID.HH), summarize, after.we
 # merge baseline and after datasets
 before.and.after <- merge(baseline, after, by=c("FamilyID.HH"))
 before.and.after.core <- merge(baseline.core, after.core, by=c("FamilyID.HH"))
+before.and.after <- merge(before.and.after, temp.cols, by.x=c("FamilyID.HH"), by.y=c("FamilyId.x"))
 
-# test for significance - paired t-test
+# tests for significance - paired t-test
 wilcox.test(before.and.after$base.welfare, before.and.after$after.welfare, paired=TRUE) # significant increase
 wilcox.test(before.and.after$base.kl.inc, before.and.after$after.kl.inc, paired=TRUE) # insignificant
 wilcox.test(before.and.after$base.TotalInc, before.and.after$after.TotalInc, paired=TRUE) # significant increase
@@ -956,6 +972,26 @@ wilcox.test(before.and.after.core$base.welfare, before.and.after.core$after.welf
 wilcox.test(before.and.after.core$base.kl.inc, before.and.after.core$after.kl.inc, paired=TRUE) # insignificant
 wilcox.test(before.and.after.core$base.TotalInc, before.and.after.core$after.TotalInc, paired=TRUE) # insignificant
 
+wilcox.test(before.and.after$base.welfare[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Core"], before.and.after$after.welfare[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.welfare[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Ripple"], before.and.after$after.welfare[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Ripple"], paired=TRUE)
+wilcox.test(before.and.after$base.kl.inc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Core"], before.and.after$after.kl.inc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.kl.inc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Ripple"], before.and.after$after.kl.inc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Ripple"], paired=TRUE)
+wilcox.test(before.and.after$base.TotalInc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Core"], before.and.after$after.TotalInc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.TotalInc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Ripple"], before.and.after$after.TotalInc[before.and.after$ServiceLocation=="BOSTON" & before.and.after$FamilyType=="FII Ripple"], paired=TRUE)
+
+wilcox.test(before.and.after$base.welfare[before.and.after$ServiceLocation=="FRESNO" & before.and.after$FamilyType=="FII Core"], before.and.after$after.welfare[before.and.after$ServiceLocation=="FRESNO" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.kl.inc[before.and.after$ServiceLocation=="FRESNO" & before.and.after$FamilyType=="FII Core"], before.and.after$after.kl.inc[before.and.after$ServiceLocation=="FRESNO" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.TotalInc[before.and.after$ServiceLocation=="FRESNO" & before.and.after$FamilyType=="FII Core"], before.and.after$after.TotalInc[before.and.after$ServiceLocation=="FRESNO" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+
+wilcox.test(before.and.after$base.welfare[before.and.after$ServiceLocation=="OAKLAND" & before.and.after$FamilyType=="FII Core"], before.and.after$after.welfare[before.and.after$ServiceLocation=="OAKLAND" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.kl.inc[before.and.after$ServiceLocation=="OAKLAND" & before.and.after$FamilyType=="FII Core"], before.and.after$after.kl.inc[before.and.after$ServiceLocation=="OAKLAND" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+wilcox.test(before.and.after$base.TotalInc[before.and.after$ServiceLocation=="OAKLAND" & before.and.after$FamilyType=="FII Core"], before.and.after$after.TotalInc[before.and.after$ServiceLocation=="OAKLAND" & before.and.after$FamilyType=="FII Core"], paired=TRUE)
+
+wilcox.test(before.and.after$base.welfare[before.and.after$ServiceLocation=="SANFRANCISCO" & before.and.after$FamilyType=="FII Ripple"], before.and.after$after.welfare[before.and.after$ServiceLocation=="SANFRANCISCO" & before.and.after$FamilyType=="FII Ripple"], paired=TRUE)
+wilcox.test(before.and.after$base.kl.inc[before.and.after$ServiceLocation=="SANFRANCISCO" & before.and.after$FamilyType=="FII Ripple"], before.and.after$after.kl.inc[before.and.after$ServiceLocation=="SANFRANCISCO" & before.and.after$FamilyType=="FII Ripple"], paired=TRUE)
+wilcox.test(before.and.after$base.TotalInc[before.and.after$ServiceLocation=="SANFRANCISCO" & before.and.after$FamilyType=="FII Ripple"], before.and.after$after.TotalInc[before.and.after$ServiceLocation=="SANFRANCISCO" & before.and.after$FamilyType=="FII Ripple"], paired=TRUE)
+
+wilcox.test(before.and.after$base.welfare, before.and.after$after.welfare, paired=TRUE)
 #### GRAPHICAL ANALYSIS OF DISTRIBUTIONS
 ## N.B. The graphs for 12-month changes include all post-12 month income entries as independent entries
 ## BUT, the REVISED  graphs use one observation for each family for baseline and after-12 months
@@ -1043,14 +1079,20 @@ ggsave(file= "TotInc_12mo.pdf", tot.inc.twelve)
 # Total Income - REVISED (USE THIS ONE)
 tot.inc.twelve.revised <- ggplot() + geom_density(aes(x=base.TotalInc, color="Baseline"), data=before.and.after) +
   geom_density(aes(x=after.TotalInc, color = "12 months or more"), data=before.and.after) +
-  geom_vline(aes(xintercept = mean(before.and.after$base.TotalInc), colour="Baseline")) + 
-  geom_vline(aes(xintercept = mean(before.and.after$after.TotalInc), colour="12 months or more")) + 
-  labs(x = "Monthly Total Income", 
-       y = "Density",
-       title = "Household Total Income at Baseline and\nTwelve Months or More After FII Enrollment")  +
-  theme(legend.title=element_blank())
+  geom_vline(aes(xintercept = mean(before.and.after$base.TotalInc), colour="Baseline"), linetype="dashed") + 
+  geom_vline(aes(xintercept = mean(before.and.after$after.TotalInc), colour="12 months or more"), linetype="dashed") + 
+  xlab("Monthly Income") +  
+  ylab("Density") + 
+  ggtitle("Average Monthly Household Income") + 
+  theme(plot.title = element_text(lineheight=3, color="black", size=25)) +
+  theme(legend.text=element_text(size=12)) +
+  theme(legend.title=element_blank()) + 
+  theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  theme(axis.text.x=element_text(size=12)) + 
+  theme(axis.title.y=element_text(size=12)) + 
+  theme(axis.title.x=element_text(size=14))
 print(tot.inc.twelve.revised)
-ggsave(file= "TotInc_Revised_12mo.pdf", tot.inc.twelve.revised)
+ggsave(file= "TotInc_Revised_12mo.pdf", tot.inc.twelve.revised, height = 6, width = 10)
 
 # K & L Income
 kl.inc.twelve <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.one) +
@@ -1087,14 +1129,20 @@ ggsave(file= "Welfare_12mo.pdf", welfare.inc.twelve)
 # Welfare Income - REVISED (USE THIS ONE)
 welfare.inc.twelve.revised <- ggplot() + geom_density(aes(x=base.welfare, color="Baseline"), data=before.and.after) +
   geom_density(aes(x=after.welfare, color="12 months or more"), data=before.and.after) + 
-  geom_vline(aes(xintercept = mean(before.and.after$base.welfare), color="Baseline")) + 
-  geom_vline(aes(xintercept = mean(before.and.after$after.welfare), color="12 months or more")) + 
-  labs(x = "Monthly Welfare Income", 
-       y = "Density",
-       title = "Household Welfare Income at Baseline and\nTwelve Months or More After FII Enrollment")  +
-  theme(legend.title=element_blank())
+  geom_vline(aes(xintercept = mean(before.and.after$base.welfare), color="Baseline"), linetype="dashed") + 
+  geom_vline(aes(xintercept = mean(before.and.after$after.welfare), color="12 months or more"), linetype="dashed") + 
+  xlab("Monthly Welfare") +  
+  ylab("Density") + 
+  ggtitle("Average Monthly Household Welfare Income") + 
+  theme(plot.title = element_text(lineheight=3, color="black", size=25)) +
+  theme(legend.text=element_text(size=12)) +
+  theme(legend.title=element_blank()) + 
+  theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  theme(axis.text.x=element_text(size=12)) + 
+  theme(axis.title.y=element_text(size=12)) + 
+  theme(axis.title.x=element_text(size=14))
 print(welfare.inc.twelve.revised)
-ggsave(file= "Welfare_Revised_12mo.pdf", welfare.inc.twelve.revised)
+ggsave(file= "Welfare_Revised_12mo.pdf", welfare.inc.twelve.revised, height = 6, width = 10)
 
 ##################################
 ## SIX MONTH CHANGES - FII CORE ##
@@ -1180,14 +1228,20 @@ ggsave(file= "TotalInc_12mo_Core.pdf", tot.inc.twelve.core)
 # Total Income - REVISED (USE THIS ONE)
 tot.inc.twelve.core.revised <- ggplot() + geom_density(aes(x=base.TotalInc, color="Baseline"), data=before.and.after.core) +
   geom_density(aes(x=after.TotalInc, color = "12 months or more"), data=before.and.after.core) +
-  geom_vline(aes(xintercept = mean(before.and.after.core$base.TotalInc), colour="Baseline")) + 
-  geom_vline(aes(xintercept = mean(before.and.after.core$after.TotalInc), colour="12 months or more")) + 
-  labs(x = "Monthly Total Income", 
-       y = "Density",
-       title = "Household Total Income at Baseline and\nTwelve Months or More After FII Enrollment for FII Core")  +
-  theme(legend.title=element_blank())
+  geom_vline(aes(xintercept = mean(before.and.after.core$base.TotalInc), colour="Baseline"), linetype="dashed") + 
+  geom_vline(aes(xintercept = mean(before.and.after.core$after.TotalInc), colour="12 months or more"), linetype="dashed") + 
+  xlab("Monthly Income") +  
+  ylab("Density") + 
+  ggtitle("Average Monthly Household Income - Core") + 
+  theme(plot.title = element_text(lineheight=3, color="black", size=25)) +
+  theme(legend.text=element_text(size=12)) +
+  theme(legend.title=element_blank()) + 
+  theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  theme(axis.text.x=element_text(size=12)) + 
+  theme(axis.title.y=element_text(size=12)) + 
+  theme(axis.title.x=element_text(size=14))
 print(tot.inc.twelve.core.revised)
-ggsave(file= "TotInc_Revised_12mo_Core.pdf", tot.inc.twelve.core.revised)
+ggsave(file= "TotInc_Revised_12mo_Core.pdf", tot.inc.twelve.core.revised, width=10, height=6)
 
 # K & L Income
 kl.inc.twelve.core <- ggplot() + geom_density(aes(x=KL.inc.HH, color="Baseline"), data=twelvemos.hh.core.one) +
@@ -1224,14 +1278,20 @@ ggsave(file= "Welfare_12mo_Core.pdf", welfare.inc.twelve.core)
 # Welfare Income - REVISED (USE THIS ONE)
 welfare.inc.twelve.core.revised <- ggplot() + geom_density(aes(x=base.welfare, color="Baseline"), data=before.and.after.core) +
   geom_density(aes(x=after.welfare, color="12 months or more"), data=before.and.after.core) + 
-  geom_vline(aes(xintercept = mean(before.and.after.core$base.welfare), color="Baseline")) + 
-  geom_vline(aes(xintercept = mean(before.and.after.core$after.welfare), color="12 months or more")) + 
-  labs(x = "Monthly Welfare Income", 
-       y = "Density",
-       title = "Household Welfare Income at Baseline and\nTwelve Months or More After FII Enrollment for FII Core")  +
-  theme(legend.title=element_blank())
+  geom_vline(aes(xintercept = mean(before.and.after.core$base.welfare), color="Baseline"), linetype="dashed") + 
+  geom_vline(aes(xintercept = mean(before.and.after.core$after.welfare), color="12 months or more"), linetype="dashed") + 
+  xlab("Monthly Welfare Income") +  
+  ylab("Density") + 
+  ggtitle("Average Monthly Household Welfare Income - Core") + 
+  theme(plot.title = element_text(lineheight=3, color="black", size=25)) +
+  theme(legend.text=element_text(size=12)) +
+  theme(legend.title=element_blank()) + 
+  theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+  theme(axis.text.x=element_text(size=12)) + 
+  theme(axis.title.y=element_text(size=12)) + 
+  theme(axis.title.x=element_text(size=14))
 print(welfare.inc.twelve.core.revised)
-ggsave(file= "Welfare_Revised_12mo_Core.pdf", welfare.inc.twelve.core.revised)
+ggsave(file= "Welfare_Revised_12mo_Core.pdf", welfare.inc.twelve.core.revised, height=6, width=10)
 
 ###################################################################################
 ##            COMPARE DISTRIBUTIONS OF INCOME AT BASELINE AND                    ##
